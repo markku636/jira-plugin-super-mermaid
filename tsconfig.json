@@ -5,7 +5,9 @@
     "moduleResolution": "Bundler",
     "lib": ["ES2020"],
     "strict": true,
-    "noEmit": true,
+    // 這裡【不能】設 noEmit:Forge 用 ts-loader 打包 src/,
+    // noEmit 會讓它拿不到輸出而報 "TypeScript emitted no output"。
+    // 型別檢查由 `npm run typecheck` 的 --noEmit 旗標負責。
     "esModuleInterop": true,
     "skipLibCheck": true,
     "isolatedModules": true,

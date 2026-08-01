@@ -114,8 +114,22 @@ Playwright 很難自動化 Jira 登入，M1–M3 以手動驗證加截圖為主�
 
 ## 授權與定價
 
-- 目標：Atlassian Marketplace 付費上架，**最小級距月費 US$5**。
-  Cloud app 的計價是「≤10 人固定月費 + 11 人以上按人頭」的階梯制，不是一次買斷。
-- `manifest.yml` 的 `app.licensing.enabled` 目前是 `false`，M4 才打開。
-- **repo 授權條款尚未決定**：sibling lib 是 MIT，但這是要賣的 app，MIT 並不合適。
-  上架前需決定（建議 proprietary / all rights reserved）。
+**免費上架**（2026-08-02 決定）。
+
+選免費直接省掉四件事：
+
+- 不需要公司網域 email —— 私有網域只在「付費 app 的 Partner Portal 存取權」被要求
+- 不需要 `app.licensing.enabled` 與授權閘門程式碼（免費 app 的 `license` 物件是 undefined）
+- 不需要稅務與收款資訊
+- 不需要顧慮「付費 app 在 production 的每次安裝都計費」
+
+仍然要的：Marketplace 合作夥伴帳號、隱私權政策、End User Terms、支援管道、送審。
+
+之後想改成付費是可行的，但會影響既有安裝者且要補齊上面整組。
+先靠免費把安裝數與評價養起來，再談收費。細節見 [docs/MARKETPLACE.md](docs/MARKETPLACE.md)。
+
+> Runs on Atlassian 徽章仍然值得維持。免費 app 沒有營收要分，
+> 但它代表「零對外傳輸」，對企業客戶是信任訊號，
+> 而維持它的成本就只是**永遠不要加 `permissions.external`**。
+
+repo 本身的授權條款仍未決定（sibling lib 是 MIT；改走免費後 MIT 不再有衝突，但仍需明確選定）。
