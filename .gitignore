@@ -1,0 +1,21 @@
+node_modules/
+
+# Forge
+.forge/
+.env
+.env.*
+
+# Custom UI 建置產物(manifest 指向 static/panel/build,由 build 產生)
+static/*/build/
+
+# 由 prebuild 從 react-super-mermaid/dist 複製,不進版控
+static/panel/public/Virgil.woff2
+
+# 驗證腳本與截圖(遵守「測試產物不放根目錄」慣例)
+outputs/
+
+# npm pack 產物,絕不進版控(sibling repo 躺了 95 個沒人清的 tarball)
+*.tgz
+
+# 含 npm/Atlassian token
+.npmrc

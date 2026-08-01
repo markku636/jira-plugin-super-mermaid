@@ -1,0 +1,24 @@
+{
+  "name": "jira-plugin-super-mermaid",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Super Mermaid for Jira — view and visually edit Mermaid diagrams inside Jira issues. Atlassian Forge app.",
+  "author": "markku636",
+  "scripts": {
+    "install:all": "npm install && npm --prefix static/panel install",
+    "build": "npm --prefix static/panel run build",
+    "dev": "npm --prefix static/panel run dev",
+    "typecheck": "tsc --noEmit && npm --prefix static/panel run typecheck",
+    "lint": "forge lint",
+    "eligibility": "forge eligibility",
+    "deploy": "npm run build && forge deploy",
+    "deploy:prod": "npm run build && forge deploy -e production",
+    "tunnel": "forge tunnel"
+  },
+  "dependencies": {
+    "@forge/resolver": "^1.6.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}

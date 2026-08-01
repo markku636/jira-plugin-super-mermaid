@@ -1,0 +1,224 @@
+/* 面板自身的樣式。react-super-mermaid 的 CSS 由 lib 在 runtime 注入
+   (manifest 已宣告 permissions.content.styles: unsafe-inline)。 */
+
+:root {
+  --sm-fg: #172b4d;
+  --sm-fg-muted: #626f86;
+  --sm-border: #dfe1e6;
+  --sm-surface: #ffffff;
+  --sm-surface-2: #f4f5f7;
+  --sm-accent: #0c66e4;
+  --sm-danger: #ae2e24;
+  --sm-warn: #a54800;
+}
+
+.sm-dark {
+  --sm-fg: #c7d1db;
+  --sm-fg-muted: #8c9bab;
+  --sm-border: #2c333a;
+  --sm-surface: #1d2125;
+  --sm-surface-2: #22272b;
+  --sm-accent: #579dff;
+  --sm-danger: #ff9c8f;
+  --sm-warn: #f5cd47;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: ui-sans-serif, -apple-system, "Segoe UI", Roboto, "Noto Sans TC",
+    "Microsoft JhengHei", sans-serif;
+  font-size: 14px;
+  color: var(--sm-fg);
+}
+
+.sm-app {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 420px;
+  background: var(--sm-surface);
+  color: var(--sm-fg);
+}
+
+.sm-status {
+  padding: 24px;
+  color: var(--sm-fg-muted);
+}
+
+.sm-banner {
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.sm-error {
+  color: var(--sm-danger);
+}
+
+.sm-warn {
+  color: var(--sm-warn);
+}
+
+/* ── 分頁 ── */
+.sm-tabs {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  border-bottom: 1px solid var(--sm-border);
+  padding-bottom: 4px;
+  overflow-x: auto;
+}
+
+.sm-tab {
+  border: 0;
+  background: transparent;
+  color: var(--sm-fg-muted);
+  padding: 6px 10px;
+  border-radius: 4px 4px 0 0;
+  cursor: pointer;
+  font: inherit;
+  white-space: nowrap;
+}
+
+.sm-tab:hover {
+  background: var(--sm-surface-2);
+}
+
+.sm-tab-active {
+  color: var(--sm-accent);
+  box-shadow: inset 0 -2px 0 0 var(--sm-accent);
+}
+
+.sm-tab-add {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* ── 工具列 ── */
+.sm-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.sm-toolbar button {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--sm-border);
+  border-radius: 4px;
+  background: var(--sm-surface);
+  color: var(--sm-fg);
+  cursor: pointer;
+  font: inherit;
+}
+
+.sm-toolbar button:hover:not(:disabled) {
+  background: var(--sm-surface-2);
+}
+
+.sm-toolbar button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.sm-toolbar button[aria-pressed='true'] {
+  border-color: var(--sm-accent);
+  color: var(--sm-accent);
+}
+
+.sm-search {
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--sm-border);
+  border-radius: 4px;
+  background: var(--sm-surface);
+  color: var(--sm-fg);
+  font: inherit;
+  min-width: 140px;
+}
+
+.sm-hits {
+  color: var(--sm-fg-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.sm-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--sm-border);
+  margin: 0 4px;
+}
+
+.sm-spacer {
+  flex: 1;
+}
+
+/* ── 內容 ── */
+.sm-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  flex: 1;
+  min-height: 360px;
+}
+
+.sm-split-open {
+  grid-template-columns: minmax(240px, 34%) 1fr;
+}
+
+@media (max-width: 720px) {
+  .sm-split-open {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sm-source {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+}
+
+.sm-source textarea {
+  flex: 1;
+  min-height: 240px;
+  resize: vertical;
+  padding: 8px;
+  border: 1px solid var(--sm-border);
+  border-radius: 4px;
+  background: var(--sm-surface-2);
+  color: var(--sm-fg);
+  font-family: ui-monospace, Consolas, "Cascadia Mono", monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  tab-size: 2;
+}
+
+.sm-source-actions button {
+  height: 32px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--sm-accent);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+}
+
+.sm-source-actions button:disabled {
+  background: var(--sm-surface-2);
+  color: var(--sm-fg-muted);
+  cursor: default;
+}
+
+.sm-preview {
+  min-height: 360px;
+  min-width: 0;
+}

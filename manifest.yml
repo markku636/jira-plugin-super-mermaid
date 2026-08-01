@@ -1,0 +1,50 @@
+modules:
+  jira:issuePanel:
+    - key: super-mermaid-panel
+      resource: panel
+      resolver:
+        function: resolver
+      title: Super Mermaid
+      # 語法是 resource:<resource key>;<相對路徑>。
+      # 絕對不能寫成外部 URL —— 那是對外連線,會直接失去 Runs on Atlassian 資格。
+      icon: resource:icons;icon.svg
+      viewportSize: xlarge
+      # 一個 issue 可以開多個面板(上限 5),配合面板內的多圖分頁
+      allowMultiple: true
+  function:
+    - key: resolver
+      handler: index.handler
+
+resources:
+  - key: panel
+    path: static/panel/build
+  - key: icons
+    path: resources
+
+permissions:
+  scopes:
+    # 讀寫 issue entity property(圖表存在這裡)
+    - read:jira-work
+    - write:jira-work
+  content:
+    styles:
+      # 必要:mermaid 會往 SVG 塞 <style>,react-super-mermaid 有 4 處
+      # document.createElement('style') 注入。Forge Custom UI 預設 style-src 'self'
+      # 會全部擋掉。已查證:這個宣告【不會】影響 Runs on Atlassian 資格,
+      # 失格條件只有 permissions.external / remotes / Connect 模組 /
+      # providers / dynamic web triggers。
+      - 'unsafe-inline'
+
+# ⚠️ 這裡刻意沒有 permissions.external ——
+# 這是 Runs on Atlassian 徽章的命脈。新增任何對外網域前先跑 `forge eligibility`。
+# 特別注意:react-super-mermaid 的 sketch 字型預設指向 jsDelivr,
+# 必須傳 fontUrl="./Virgil.woff2" 指向 bundle 內的檔案,否則就是對外連線。
+
+app:
+  runtime:
+    name: nodejs22.x
+  # `forge register` 會自動在這裡補上 id: ari:cloud:ecosystem::app/<uuid>
+  #
+  # M4 上架時再加:
+  #   licensing:
+  #     enabled: true
