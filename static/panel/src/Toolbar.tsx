@@ -68,6 +68,7 @@ export function Toolbar({
   const [term, setTerm] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
   // SearchState.current 是 1-based,無命中時為 0。
   const [hits, setHits] = useState<SearchState | null>(null);
 
@@ -155,16 +156,47 @@ export function Toolbar({
 
       <span className="sm-sep" />
 
-      <button
-        type="button"
-        onClick={() => void viewer.current?.downloadPng()}
-        title="Export diagram… (PNG)"
-      >
-        <IconDownload />
-      </button>
-      <button type="button" onClick={() => viewer.current?.downloadSvg()} title="Export as SVG">
-        SVG
-      </button>
+      {/* 匯出收成一顆按鈕 + 選單,跟 VS Code 版的「Export diagram…」一致。
+          PNG 與 SVG 各佔一顆常駐按鈕太浪費寬度。 */}
+      <span className="sm-more-wrap">
+        <button
+          type="button"
+          aria-pressed={exportOpen}
+          aria-expanded={exportOpen}
+          onClick={() => {
+            setExportOpen((v) => !v);
+            setMoreOpen(false);
+          }}
+          title="Export diagram…"
+        >
+          <IconDownload />
+        </button>
+
+        {exportOpen && (
+          <div className="sm-more-pop sm-more-pop-sm" role="menu">
+            <button
+              type="button"
+              className="sm-more-item"
+              onClick={() => {
+                setExportOpen(false);
+                void viewer.current?.downloadPng();
+              }}
+            >
+              Download PNG
+            </button>
+            <button
+              type="button"
+              className="sm-more-item"
+              onClick={() => {
+                setExportOpen(false);
+                viewer.current?.downloadSvg();
+              }}
+            >
+              Download SVG
+            </button>
+          </div>
+        )}
+      </span>
       {onShare && (
         <button type="button" onClick={onShare} title="Share to mermaid.live">
           {shared ? '✓' : <IconShare />}
@@ -198,7 +230,10 @@ export function Toolbar({
             type="button"
             aria-pressed={moreOpen}
             aria-expanded={moreOpen}
-            onClick={() => setMoreOpen((v) => !v)}
+            onClick={() => {
+              setMoreOpen((v) => !v);
+              setExportOpen(false);
+            }}
             title="More… (display size)"
           >
             <IconMore />
