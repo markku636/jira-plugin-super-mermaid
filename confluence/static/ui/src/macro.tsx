@@ -5,6 +5,7 @@ import { MermaidViewer, type MermaidViewerHandle } from 'react-super-mermaid';
 // 共用 Jira app 的英文工具列 —— 不重複維護兩份。
 // (lib 內建 Toolbar 硬寫繁中,國際市集會卡,兩邊都走自建。)
 import { Toolbar } from '../../../../static/panel/src/Toolbar';
+import { DrawEditor } from '../../../../static/panel/src/DrawEditor';
 import { buildMermaidLiveUrl, canShare } from '../../../../static/panel/src/shareLink';
 import { useMermaidDeps } from './useMermaidDeps';
 import { savePageMacroSource } from './savePageMacro';
@@ -37,6 +38,7 @@ function Macro() {
   const [pageId, setPageId] = useState<string | null>(null);
   const [localId, setLocalId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [drawing, setDrawing] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -117,6 +119,9 @@ function Macro() {
               : undefined
           }
           shared={shared}
+          // 繪圖會改內容,所以只在可寫回的已發布頁面開放。
+          drawing={drawing}
+          onToggleDraw={editable ? () => setDrawing((v) => !v) : undefined}
           height={height}
           onHeightChange={setHeight}
         />
@@ -124,9 +129,43 @@ function Macro() {
 
       {/* 圖表與語法是二選一的模式,不往下堆疊 —— 使用者要的是「切換」。
           高度:auto 交給內容撐開,其餘用指定的像素值。 */}
+      {/* 繪圖模式:拖拉的結果經 lib 無損序列化回 mermaid,寫進 draft,
+          再用同一條 savePageMacroSource 寫回頁面 —— 與語法編輯共用儲存路徑。 */}
+      {drawing && deps && (
+        <>
+          <DrawEditor
+            source={draft}
+            dark={dark}
+            mermaid={deps.mermaid}
+            fontUrl="./Virgil.woff2"
+            height={height}
+            onMermaidChange={setDraft}
+            onError={setError}
+          />
+          <div className="sm-draw-actions">
+            <button
+              type="button"
+              className="sm-primary"
+              disabled={saving || draft === source || !pageId || !localId}
+              onClick={() => {
+                if (!pageId || !localId) return;
+                setSaving(true);
+                setError(null);
+                savePageMacroSource(pageId, localId, draft)
+                  .then(() => setSource(draft))
+                  .catch((e) => setError(e instanceof Error ? e.message : String(e)))
+                  .finally(() => setSaving(false));
+              }}
+            >
+              {saving ? 'Saving…' : draft === source ? 'Saved' : 'Save to page'}
+            </button>
+          </div>
+        </>
+      )}
+
       <div
         className="sm-figure-body"
-        hidden={showSource}
+        hidden={showSource || drawing}
         style={height !== 'auto' ? { height: Number(height) } : undefined}
       >
         {deps ? (

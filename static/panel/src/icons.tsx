@@ -74,3 +74,11 @@ export const IconTheme = () => (
     <path d="M13.2 9.6A5.6 5.6 0 0 1 6.4 2.8a5.6 5.6 0 1 0 6.8 6.8Z" />
   </svg>
 );
+
+/** 繪圖模式切換。VS Code 版是獨立的 editor webview,這裡用鉛筆表達。 */
+export const IconDraw = () => (
+  <svg {...box14} fill="none" stroke="currentColor" strokeWidth={1.4} strokeLinejoin="round">
+    <path d="M11.2 2.3a1.4 1.4 0 0 1 2 2L5.6 11.9 2.6 13l1.1-3 7.5-7.7Z" />
+    <path d="M9.9 3.6l2.1 2.1" />
+  </svg>
+);

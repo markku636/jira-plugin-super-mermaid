@@ -350,3 +350,26 @@ body {
 .sm-more-item:hover {
   background: var(--sm-surface-2);
 }
+
+/* ── 繪圖編輯器 ── */
+.sm-draw {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sm-draw-bar {
+  padding: 4px 2px;
+  border-bottom: 1px solid var(--sm-border);
+}
+
+.sm-draw-canvas {
+  min-width: 0;
+  border: 1px solid var(--sm-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.sm-draw-canvas > * {
+  height: 100%;
+}

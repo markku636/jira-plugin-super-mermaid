@@ -15,6 +15,7 @@ import {
   IconCode,
   IconCopy,
   IconDownload,
+  IconDraw,
   IconFit,
   IconMore,
   IconSearch,
@@ -37,6 +38,9 @@ interface Props {
   /** 產生 mermaid.live 分享連結並複製。省略則不顯示。 */
   onShare?: () => void;
   shared?: boolean;
+  /** 拖拉繪圖模式切換。省略則不顯示。 */
+  drawing?: boolean;
+  onToggleDraw?: () => void;
   /** 顯示高度。'auto' = 依內容撐開,其餘為像素字串。 */
   height?: string;
   onHeightChange?: (value: string) => void;
@@ -62,6 +66,8 @@ export function Toolbar({
   copied,
   onShare,
   shared,
+  drawing,
+  onToggleDraw,
   height,
   onHeightChange,
 }: Props) {
@@ -205,6 +211,16 @@ export function Toolbar({
       {onCopySource && (
         <button type="button" onClick={onCopySource} title="Copy Mermaid source">
           {copied ? '✓' : <IconCopy />}
+        </button>
+      )}
+      {onToggleDraw && (
+        <button
+          type="button"
+          onClick={onToggleDraw}
+          aria-pressed={drawing}
+          title="Draw: drag nodes and edges instead of typing"
+        >
+          <IconDraw />
         </button>
       )}
       {onToggleSource && (

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { MermaidViewer, type MermaidViewerHandle } from 'react-super-mermaid';
 import type { MermaidSource, SvgPanZoomSource } from 'react-super-mermaid';
 import { Toolbar } from './Toolbar';
+import { DrawEditor } from './DrawEditor';
 import { buildMermaidLiveUrl, canShare } from './shareLink';
 import { getIssueKey, isNearLimit, loadDiagrams, saveDiagrams } from './storage';
 import { STARTER_CODE, type Diagram, type DiagramDoc } from './types';
@@ -36,6 +37,8 @@ export function App() {
   const [dark, setDark] = useState(false);
   const [copied, setCopied] = useState(false);
   const [shared, setShared] = useState(false);
+  // 拖拉繪圖模式。編輯結果會序列化回 draft,再由既有的 Save 寫進 issue property。
+  const [drawing, setDrawing] = useState(false);
   // 顯示高度。面板在 iframe 裡,lib 的 toggleFullscreen 只會填滿 iframe 而非
   // 瀏覽器視窗,結果是圖縮進原本的小框 —— 所以「放大」在這裡就是設定高度。
   // 'auto' = 依內容撐開。跟著圖一起存進 issue property,每張圖各自記住。
@@ -198,6 +201,8 @@ export function App() {
             : undefined
         }
         shared={shared}
+        drawing={drawing}
+        onToggleDraw={() => setDrawing((v) => !v)}
         height={height}
         onHeightChange={setHeight}
       />
@@ -209,7 +214,29 @@ export function App() {
         </div>
       )}
 
-      <div className={showSource ? 'sm-split sm-split-open' : 'sm-split'}>
+      {/* 繪圖模式:整塊換成編輯器。拖拉的結果經 lib 無損序列化回 mermaid,
+          寫進 draft,再由下方既有的 Save 存進 issue property —— 兩種編輯方式
+          共用同一條儲存路徑,不會有兩份真相。 */}
+      {drawing && mermaidSource && (
+        <>
+          <DrawEditor
+            source={draft}
+            dark={dark}
+            mermaid={mermaidSource}
+            fontUrl="./Virgil.woff2"
+            height={height}
+            onMermaidChange={setDraft}
+            onError={setError}
+          />
+          <div className="sm-source-actions">
+            <button type="button" onClick={() => void save()} disabled={!dirty || saving}>
+              {saving ? 'Saving…' : dirty ? 'Save' : 'Saved'}
+            </button>
+          </div>
+        </>
+      )}
+
+      <div className={showSource ? 'sm-split sm-split-open' : 'sm-split'} hidden={drawing}>
         {showSource && (
           <div className="sm-source">
             <textarea

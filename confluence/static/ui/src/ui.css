@@ -506,3 +506,50 @@ body {
 .sm-more-item:hover {
   background: var(--sm-surface-2);
 }
+
+/* ── 繪圖編輯器 ── */
+.sm-draw {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sm-draw-bar {
+  padding: 4px 2px;
+  border-bottom: 1px solid var(--sm-border);
+}
+
+.sm-draw-canvas {
+  min-width: 0;
+  border: 1px solid var(--sm-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.sm-draw-canvas > * {
+  height: 100%;
+}
+
+.sm-draw-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+.sm-draw-actions .sm-primary {
+  height: 30px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--sm-accent);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12.5px;
+}
+
+.sm-draw-actions .sm-primary:disabled {
+  background: var(--sm-surface-2);
+  color: var(--sm-fg-muted);
+  cursor: default;
+}
