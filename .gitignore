@@ -5,11 +5,14 @@ node_modules/
 .env
 .env.*
 
-# Custom UI 建置產物(manifest 指向 static/panel/build,由 build 產生)
+# Custom UI 建置產物(manifest 指向各自的 build 目錄,由 build 產生)
+# gitignore 的 pattern 含 / 時錨定在本檔位置,所以 confluence/ 底下要另外列。
 static/*/build/
+confluence/static/*/build/
 
 # 由 prebuild 從 react-super-mermaid/dist 複製,不進版控
 static/panel/public/Virgil.woff2
+confluence/static/ui/public/Virgil.woff2
 
 # 驗證腳本與截圖(遵守「測試產物不放根目錄」慣例)
 outputs/

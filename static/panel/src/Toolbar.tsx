@@ -14,8 +14,12 @@ interface Props {
   viewer: React.RefObject<MermaidViewerHandle | null>;
   dark: boolean;
   onToggleDark: () => void;
-  showSource: boolean;
-  onToggleSource: () => void;
+  /**
+   * 原始碼切換。省略則不顯示該按鈕 —— Confluence macro 的編輯走設定面板,
+   * 檢視端沒有可切換的原始碼,不該出現一顆按了沒反應的鈕。
+   */
+  showSource?: boolean;
+  onToggleSource?: () => void;
 }
 
 export function Toolbar({ viewer, dark, onToggleDark, showSource, onToggleSource }: Props) {
@@ -84,14 +88,16 @@ export function Toolbar({ viewer, dark, onToggleDark, showSource, onToggleSource
 
       <span className="sm-spacer" />
 
-      <button
-        type="button"
-        onClick={onToggleSource}
-        aria-pressed={showSource}
-        title="Toggle Mermaid source"
-      >
-        {showSource ? 'Hide source' : 'Source'}
-      </button>
+      {onToggleSource && (
+        <button
+          type="button"
+          onClick={onToggleSource}
+          aria-pressed={showSource}
+          title="Toggle Mermaid source"
+        >
+          {showSource ? 'Hide source' : 'Source'}
+        </button>
+      )}
       <button type="button" onClick={onToggleDark} aria-pressed={dark} title="Toggle dark mode">
         {dark ? 'Light' : 'Dark'}
       </button>

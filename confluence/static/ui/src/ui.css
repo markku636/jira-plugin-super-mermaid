@@ -1,0 +1,181 @@
+/* Confluence macro 與設定面板的樣式。
+   react-super-mermaid 的 CSS 由 lib 在 runtime 注入
+   (manifest 已宣告 permissions.content.styles: unsafe-inline)。 */
+
+:root {
+  --sm-fg: #172b4d;
+  --sm-fg-muted: #626f86;
+  --sm-border: #dfe1e6;
+  --sm-surface: #ffffff;
+  --sm-surface-2: #f4f5f7;
+  --sm-accent: #0c66e4;
+  --sm-danger: #ae2e24;
+  --sm-warn: #a54800;
+}
+
+.sm-dark {
+  --sm-fg: #c7d1db;
+  --sm-fg-muted: #8c9bab;
+  --sm-border: #2c333a;
+  --sm-surface: #1d2125;
+  --sm-surface-2: #22272b;
+  --sm-accent: #579dff;
+  --sm-danger: #ff9c8f;
+  --sm-warn: #f5cd47;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Noto Sans TC',
+    'Microsoft JhengHei', sans-serif;
+  font-size: 14px;
+  color: var(--sm-fg);
+}
+
+.sm-app {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--sm-surface);
+  color: var(--sm-fg);
+}
+
+.sm-status {
+  padding: 24px;
+  color: var(--sm-fg-muted);
+}
+
+.sm-banner {
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  background: var(--sm-surface-2);
+}
+
+.sm-error {
+  color: var(--sm-danger);
+}
+
+.sm-warn {
+  color: var(--sm-warn);
+}
+
+/* ── 工具列(與 Jira 版共用元件,樣式在此鏡像) ── */
+.sm-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.sm-toolbar button {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--sm-border);
+  border-radius: 4px;
+  background: var(--sm-surface);
+  color: var(--sm-fg);
+  cursor: pointer;
+  font: inherit;
+}
+
+.sm-toolbar button:hover:not(:disabled) {
+  background: var(--sm-surface-2);
+}
+
+.sm-toolbar button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.sm-toolbar button[aria-pressed='true'] {
+  border-color: var(--sm-accent);
+  color: var(--sm-accent);
+}
+
+.sm-search {
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--sm-border);
+  border-radius: 4px;
+  background: var(--sm-surface);
+  color: var(--sm-fg);
+  font: inherit;
+  min-width: 140px;
+}
+
+.sm-hits {
+  color: var(--sm-fg-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.sm-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--sm-border);
+  margin: 0 4px;
+}
+
+.sm-spacer {
+  flex: 1;
+}
+
+.sm-preview {
+  min-height: 320px;
+  min-width: 0;
+}
+
+/* ── 設定面板 ── */
+.sm-config {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+}
+
+.sm-config-label {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.sm-config textarea {
+  width: 100%;
+  resize: vertical;
+  padding: 8px;
+  border: 1px solid var(--sm-border);
+  border-radius: 4px;
+  background: var(--sm-surface-2);
+  color: var(--sm-fg);
+  font-family: ui-monospace, Consolas, 'Cascadia Mono', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  tab-size: 2;
+}
+
+.sm-config-hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--sm-fg-muted);
+}
+
+.sm-config-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sm-config-actions button {
+  height: 32px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--sm-accent);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+}

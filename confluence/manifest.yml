@@ -1,0 +1,59 @@
+# Confluence 版 Super Mermaid —— 刻意是「第二個獨立的 Forge app」。
+#
+# 為什麼不跟 Jira 版共用一個 app:
+# 跨產品(app.compatibility 同時宣告 jira + confluence)的 Forge app
+# 【只能付費上架,不支援免費 listing】。拆成兩個單產品 app,兩邊都能免費。
+# 代價是兩份 Marketplace listing 與兩次審核。
+#
+# 這個目錄自己是一個 Forge app,forge 指令要在 confluence/ 底下跑。
+# Custom UI 原始碼共用 ../static/panel/src(以相對路徑 import),不重複維護。
+
+modules:
+  macro:
+    - key: super-mermaid-macro
+      resource: macro
+      resolver:
+        function: resolver
+      title: Super Mermaid
+      description: Render Mermaid diagrams inline in your page.
+      icon: resource:icons;icon.svg
+      # block = 獨立區塊(預設)。Jira 只能側邊面板,Confluence 這裡能真正嵌在內文。
+      layout: block
+      viewportSize: large
+      categories:
+        - visuals
+        - formatting
+      config:
+        resource: config
+        parameters:
+          # mermaid 原始碼存在 macro 參數裡,跟著頁面版本走。
+          # 不用 Forge storage:圖表屬於這一頁,複製頁面時該一起被複製。
+          - identifier: source
+            type: string
+  function:
+    - key: resolver
+      handler: index.handler
+
+resources:
+  # 同一個 Vite 專案兩個 entry,輸出成兩個子目錄各自帶 index.html
+  - key: macro
+    path: static/ui/build/macro
+  - key: config
+    path: static/ui/build/config
+  - key: icons
+    path: ../resources
+
+permissions:
+  content:
+    styles:
+      # 同 Jira 版:mermaid 會往 SVG 塞 <style>,lib 也有 4 處 createElement('style')。
+      # Forge Custom UI 預設 style-src 'self' 會擋掉。已查證不影響 Runs on Atlassian。
+      - 'unsafe-inline'
+
+# ⚠️ 同樣刻意沒有 permissions.external —— 那是 Runs on Atlassian 的命脈。
+# 也刻意沒有 permissions.scopes:圖表存在 macro 參數裡,不需要讀寫 Confluence API。
+
+app:
+  runtime:
+    name: nodejs22.x
+  id: ari:cloud:ecosystem::app/fd93a1d5-8b3a-4a6d-8785-61624b4b8fe0
