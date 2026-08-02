@@ -26,7 +26,9 @@ function Config() {
     setSaving(true);
     setError(null);
     try {
-      await view.submit({ source });
+      // payload 必須是 { config: {...} },不能把設定值直接攤在最外層。
+      // 攤平會拿到:view.submit(): Invalid "config" provided. Expected object
+      await view.submit({ config: { source } });
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
       console.error('[super-mermaid] view.submit failed', e);
