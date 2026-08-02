@@ -239,6 +239,20 @@ export function App() {
       <div className={showSource ? 'sm-split sm-split-open' : 'sm-split'} hidden={drawing}>
         {showSource && (
           <div className="sm-source">
+            {/* 關掉語法檢視的最短路徑。工具列的 </> 讀同一個 state,
+                按這裡它會一起退出 pressed 狀態。 */}
+            <div className="sm-source-head">
+              <span>Mermaid source</span>
+              <button
+                type="button"
+                className="sm-close"
+                onClick={() => setShowSource(false)}
+                title="Close source"
+                aria-label="Close source"
+              >
+                ✕
+              </button>
+            </div>
             <textarea
               value={draft}
               onChange={(e) => setDraft(e.target.value)}

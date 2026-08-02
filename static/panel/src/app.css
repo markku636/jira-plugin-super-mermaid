@@ -191,6 +191,32 @@ body {
   min-height: 0;
 }
 
+.sm-source-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--sm-fg-muted);
+}
+
+.sm-source-head .sm-close {
+  height: 24px;
+  padding: 0 8px;
+  border: 1px solid var(--sm-border);
+  border-radius: 4px;
+  background: var(--sm-surface);
+  color: var(--sm-fg-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.sm-source-head .sm-close:hover {
+  color: var(--sm-fg);
+}
+
 .sm-source textarea {
   flex: 1;
   min-height: 240px;

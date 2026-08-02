@@ -249,6 +249,16 @@ body {
   font-size: 12px;
 }
 
+.sm-figure-source-head .sm-close {
+  padding: 0 8px;
+  color: var(--sm-fg-muted);
+  line-height: 1;
+}
+
+.sm-figure-source-head .sm-close:hover {
+  color: var(--sm-fg);
+}
+
 .sm-figure-source-head .sm-primary {
   border-color: var(--sm-accent);
   background: var(--sm-accent);

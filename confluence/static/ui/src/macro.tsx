@@ -220,6 +220,17 @@ function Macro() {
                   {saving ? 'Saving…' : draft === source ? 'Saved' : 'Save'}
                 </button>
               )}
+              {/* 關掉語法檢視的最短路徑。工具列的 </> 讀同一個 state,
+                  按這裡它會一起退出 pressed 狀態。 */}
+              <button
+                type="button"
+                className="sm-close"
+                onClick={() => setShowSource(false)}
+                title="Close source"
+                aria-label="Close source"
+              >
+                ✕
+              </button>
             </span>
           </div>
 
