@@ -6,7 +6,9 @@ export interface Diagram {
    *  另外存一份 scene JSON 只會製造兩份真相。 */
   code: string;
   updatedAt: string;
-  updatedBy?: string;
+  // 刻意不存任何使用者識別(名稱 / email / accountId)。
+  // Marketplace 的「是否儲存個資」因此可以誠實答 No,
+  // 也是 docs/PRIVACY.md 的依據 —— 別為了方便加回來。
 }
 
 /** issue property 的完整內容。`v` 保留給之後的 schema 遷移(例如溢位改走 KVS)。 */
