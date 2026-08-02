@@ -1,5 +1,7 @@
 # Super Mermaid for Jira
 
+**繁體中文** ｜ [English](./README.en.md)
+
 Atlassian Forge app：在 Jira issue 裡檢視與**視覺化編輯** Mermaid 圖表。
 
 `react-super-mermaid` 的第三個宿主（前兩個是 blog 與 VS Code 擴充）。
