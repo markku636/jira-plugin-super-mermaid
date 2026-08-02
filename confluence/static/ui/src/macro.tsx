@@ -23,6 +23,9 @@ function Macro() {
   // 要暗色請按工具列的鈕。
   const [dark, setDark] = useState(false);
   const [showSource, setShowSource] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  // 每張圖各自的高度,存在 macro 參數裡跟著頁面版本走。auto = 依內容撐開。
+  const [height, setHeight] = useState('auto');
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,13 +34,14 @@ function Macro() {
     void (async () => {
       // macro 的原始碼存在 config 參數裡,跟著頁面版本走 —— 複製頁面時會一起被複製。
       const ctx = (await view.getContext()) as {
-        extension?: { config?: { source?: string } };
+        extension?: { config?: { source?: string; height?: string } };
       };
       if (cancelled) return;
 
       const s = ctx.extension?.config?.source;
       setConfigured(Boolean(s && s.trim()));
       setSource(s && s.trim() ? s : PLACEHOLDER);
+      setHeight(ctx.extension?.config?.height ?? 'auto');
     })();
     return () => {
       cancelled = true;
@@ -58,7 +62,7 @@ function Macro() {
   if (source === null) return <div className="sm-status">Loading…</div>;
 
   return (
-    <div className={`sm-figure${dark ? ' sm-dark' : ''}`}>
+    <div className={`sm-figure${dark ? ' sm-dark' : ''}${expanded ? ' sm-expanded' : ''}`}>
       {!configured && (
         <div className="sm-banner sm-warn">
           No diagram yet — click this macro and choose Edit to add your Mermaid source.
@@ -75,10 +79,24 @@ function Macro() {
           onToggleSource={() => setShowSource((v) => !v)}
           onCopySource={copySource}
           copied={copied}
+          expanded={expanded}
+          onToggleExpand={() => setExpanded((v) => !v)}
         />
       </div>
 
-      <div className="sm-figure-body">
+      {/* 圖表與語法是二選一的模式,不往下堆疊 —— 使用者要的是「切換」。
+          高度:展開時一律 720px;否則用設定的高度,auto 則交給內容撐開。 */}
+      <div
+        className="sm-figure-body"
+        hidden={showSource}
+        style={
+          expanded
+            ? { height: 720 }
+            : height !== 'auto'
+              ? { height: Number(height) }
+              : undefined
+        }
+      >
         {deps ? (
           <MermaidViewer
             ref={viewer}

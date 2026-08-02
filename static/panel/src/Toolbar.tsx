@@ -21,6 +21,16 @@ interface Props {
   onCopySource?: () => void;
   /** 複製成功的短暫回饋。 */
   copied?: boolean;
+  /**
+   * 放大 / 收合。
+   *
+   * 這裡刻意【不】用 lib 的 toggleFullscreen():它靠 position: fixed 覆蓋視窗,
+   * 但在 Forge 裡「視窗」就是那個 iframe —— 結果是圖被塞進原本的小框裡縮成一團。
+   * iframe 內做不到真正的全螢幕,改為把內容高度撐大,讓自動調整高度的
+   * macro / 面板跟著長高。
+   */
+  expanded?: boolean;
+  onToggleExpand?: () => void;
 }
 
 export function Toolbar({
@@ -31,6 +41,8 @@ export function Toolbar({
   onToggleSource,
   onCopySource,
   copied,
+  expanded,
+  onToggleExpand,
 }: Props) {
   const [term, setTerm] = useState('');
   // SearchState.current 是 1-based,無命中時為 0。
@@ -115,9 +127,16 @@ export function Toolbar({
       <button type="button" onClick={onToggleDark} aria-pressed={dark} title="Toggle dark mode">
         {dark ? 'Light' : 'Dark'}
       </button>
-      <button type="button" onClick={() => viewer.current?.toggleFullscreen()} title="Fullscreen">
-        ⛶
-      </button>
+      {onToggleExpand && (
+        <button
+          type="button"
+          onClick={onToggleExpand}
+          aria-pressed={expanded}
+          title={expanded ? 'Shrink' : 'Expand'}
+        >
+          {expanded ? '⤡' : '⤢'}
+        </button>
+      )}
     </div>
   );
 }

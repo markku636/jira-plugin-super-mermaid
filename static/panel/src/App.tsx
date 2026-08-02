@@ -34,6 +34,9 @@ export function App() {
   // 跟 Jira 當下的佈景無關,結果就是淺色頁面裡冒出深色畫布。要暗色請按工具列的鈕。
   const [dark, setDark] = useState(false);
   const [copied, setCopied] = useState(false);
+  // 面板也在 iframe 裡,lib 的 toggleFullscreen 只會填滿 iframe 而非瀏覽器視窗,
+  // 結果是圖縮進原本的小框。改用撐高內容,讓面板跟著長高。
+  const [expanded, setExpanded] = useState(false);
 
   // 重依賴一律注入實例。若讓 lib 自己解析,它的第三段 fallback 是 CDN ——
   // 在 Forge 會被 CSP 擋下,而且一旦成功就是對外連線,會失去 Runs on Atlassian。
@@ -171,6 +174,8 @@ export function App() {
           });
         }}
         copied={copied}
+        expanded={expanded}
+        onToggleExpand={() => setExpanded((v) => !v)}
       />
 
       {error && <div className="sm-banner sm-error">{error}</div>}
@@ -197,7 +202,7 @@ export function App() {
           </div>
         )}
 
-        <div className="sm-preview">
+        <div className="sm-preview" style={expanded ? { height: 720 } : undefined}>
           {ready ? (
             <MermaidViewer
               ref={viewer}
