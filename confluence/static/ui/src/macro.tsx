@@ -6,6 +6,7 @@ import { MermaidViewer, type MermaidViewerHandle } from 'react-super-mermaid';
 // (lib 內建 Toolbar 硬寫繁中,國際市集會卡,兩邊都走自建。)
 import { Toolbar } from '../../../../static/panel/src/Toolbar';
 import { useMermaidDeps } from './useMermaidDeps';
+import { savePageMacroSource } from './savePageMacro';
 import './ui.css';
 
 const PLACEHOLDER = `flowchart LR
@@ -23,25 +24,46 @@ function Macro() {
   // 要暗色請按工具列的鈕。
   const [dark, setDark] = useState(false);
   const [showSource, setShowSource] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-  // 每張圖各自的高度,存在 macro 參數裡跟著頁面版本走。auto = 依內容撐開。
+  // 每張圖各自的高度,預設值存在 macro 參數裡跟著頁面版本走(設定面板可改),
+  // 工具列的快捷則是當下的即時調整。auto = 依內容撐開。
   const [height, setHeight] = useState('auto');
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // 內嵌編輯:draft 是編輯中的文字,source 是目前渲染的內容。
+  const [draft, setDraft] = useState('');
+  const [editable, setEditable] = useState(false);
+  const [pageId, setPageId] = useState<string | null>(null);
+  const [localId, setLocalId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     void (async () => {
       // macro 的原始碼存在 config 參數裡,跟著頁面版本走 —— 複製頁面時會一起被複製。
       const ctx = (await view.getContext()) as {
-        extension?: { config?: { source?: string; height?: string } };
+        localId?: string;
+        extension?: {
+          config?: { source?: string; height?: string };
+          content?: { id?: string };
+          isEditing?: boolean;
+        };
       };
       if (cancelled) return;
 
       const s = ctx.extension?.config?.source;
       setConfigured(Boolean(s && s.trim()));
       setSource(s && s.trim() ? s : PLACEHOLDER);
+      setDraft(s && s.trim() ? s : PLACEHOLDER);
       setHeight(ctx.extension?.config?.height ?? 'auto');
+
+      // 內嵌編輯要能寫回頁面,需要頁面 id 與自己的 localId 兩者都有。
+      // 而且【只在已發布頁面】可用 —— 編輯器裡是草稿,直接寫已發布版本
+      // 會跟編輯器的狀態打架。
+      const pid = ctx.extension?.content?.id;
+      const lid = ctx.localId;
+      setEditable(Boolean(pid && lid) && ctx.extension?.isEditing !== true);
+      setPageId(pid ?? null);
+      setLocalId(lid ?? null);
     })();
     return () => {
       cancelled = true;
@@ -62,7 +84,7 @@ function Macro() {
   if (source === null) return <div className="sm-status">Loading…</div>;
 
   return (
-    <div className={`sm-figure${dark ? ' sm-dark' : ''}${expanded ? ' sm-expanded' : ''}`}>
+    <div className={`sm-figure${dark ? ' sm-dark' : ''}`}>
       {!configured && (
         <div className="sm-banner sm-warn">
           No diagram yet — click this macro and choose Edit to add your Mermaid source.
@@ -79,23 +101,17 @@ function Macro() {
           onToggleSource={() => setShowSource((v) => !v)}
           onCopySource={copySource}
           copied={copied}
-          expanded={expanded}
-          onToggleExpand={() => setExpanded((v) => !v)}
+          height={height}
+          onHeightChange={setHeight}
         />
       </div>
 
       {/* 圖表與語法是二選一的模式,不往下堆疊 —— 使用者要的是「切換」。
-          高度:展開時一律 720px;否則用設定的高度,auto 則交給內容撐開。 */}
+          高度:auto 交給內容撐開,其餘用指定的像素值。 */}
       <div
         className="sm-figure-body"
         hidden={showSource}
-        style={
-          expanded
-            ? { height: 720 }
-            : height !== 'auto'
-              ? { height: Number(height) }
-              : undefined
-        }
+        style={height !== 'auto' ? { height: Number(height) } : undefined}
       >
         {deps ? (
           <MermaidViewer
@@ -127,14 +143,49 @@ function Macro() {
         <div className="sm-figure-source">
           <div className="sm-figure-source-head">
             <span>Mermaid source</span>
-            <button type="button" onClick={copySource}>
-              {copied ? '✓ Copied' : 'Copy'}
-            </button>
+            <span style={{ display: 'flex', gap: 6 }}>
+              <button type="button" onClick={copySource}>
+                {copied ? '✓ Copied' : 'Copy'}
+              </button>
+              {editable && (
+                <button
+                  type="button"
+                  className="sm-primary"
+                  disabled={saving || draft === source}
+                  onClick={() => {
+                    if (!pageId || !localId) return;
+                    setSaving(true);
+                    setError(null);
+                    savePageMacroSource(pageId, localId, draft)
+                      .then(() => setSource(draft))
+                      .catch((e) => setError(e instanceof Error ? e.message : String(e)))
+                      .finally(() => setSaving(false));
+                  }}
+                >
+                  {saving ? 'Saving…' : draft === source ? 'Saved' : 'Save'}
+                </button>
+              )}
+            </span>
           </div>
-          {/* 唯讀:macro 檢視端無法寫回設定,存檔只能走 view.submit(),
-              而那只在設定面板可用。誠實標示,不做一個改了不會存的假輸入框。 */}
-          <pre>{source}</pre>
-          <p className="sm-figure-hint">Read-only. To change it, click the macro and choose Edit.</p>
+
+          {editable ? (
+            <textarea
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              spellCheck={false}
+              rows={14}
+              aria-label="Mermaid source"
+            />
+          ) : (
+            <pre>{source}</pre>
+          )}
+
+          <p className="sm-figure-hint">
+            {editable
+              ? 'Edits are written straight back to this page. Switch back to the diagram to see the result.'
+              : /* 編輯器裡是草稿,直接寫已發布版本會跟編輯器打架,所以只給唯讀。 */
+                'Read-only while the page is being edited. Click the macro and choose Edit, or save the page first.'}
+          </p>
         </div>
       )}
     </div>

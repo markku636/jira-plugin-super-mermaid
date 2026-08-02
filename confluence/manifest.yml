@@ -50,6 +50,13 @@ resources:
     path: resources
 
 permissions:
+  scopes:
+    # 內嵌編輯用:在檢視頁面時直接改圖,不必進設定面板。
+    # 做法是讀回頁面 ADF、改掉這個 macro 的 guestParams.source、再寫回去。
+    # macro 檢視端無法用 view.submit()(那只在設定面板可用),所以只能走 REST。
+    # 注意:scopes 不影響 Runs on Atlassian —— 失格條件是對外傳輸,不是權限。
+    - read:page:confluence
+    - write:page:confluence
   content:
     styles:
       # 同 Jira 版:mermaid 會往 SVG 塞 <style>,lib 也有 4 處 createElement('style')。

@@ -6,6 +6,8 @@ export interface Diagram {
    *  另外存一份 scene JSON 只會製造兩份真相。 */
   code: string;
   updatedAt: string;
+  /** 顯示高度:'auto' 或像素字串。每張圖各自記住。 */
+  height?: string;
   // 刻意不存任何使用者識別(名稱 / email / accountId)。
   // Marketplace 的「是否儲存個資」因此可以誠實答 No,
   // 也是 docs/PRIVACY.md 的依據 —— 別為了方便加回來。

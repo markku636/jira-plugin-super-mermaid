@@ -34,9 +34,10 @@ export function App() {
   // 跟 Jira 當下的佈景無關,結果就是淺色頁面裡冒出深色畫布。要暗色請按工具列的鈕。
   const [dark, setDark] = useState(false);
   const [copied, setCopied] = useState(false);
-  // 面板也在 iframe 裡,lib 的 toggleFullscreen 只會填滿 iframe 而非瀏覽器視窗,
-  // 結果是圖縮進原本的小框。改用撐高內容,讓面板跟著長高。
-  const [expanded, setExpanded] = useState(false);
+  // 顯示高度。面板在 iframe 裡,lib 的 toggleFullscreen 只會填滿 iframe 而非
+  // 瀏覽器視窗,結果是圖縮進原本的小框 —— 所以「放大」在這裡就是設定高度。
+  // 'auto' = 依內容撐開。跟著圖一起存進 issue property,每張圖各自記住。
+  const [height, setHeight] = useState('auto');
 
   // 重依賴一律注入實例。若讓 lib 自己解析,它的第三段 fallback 是 CDN ——
   // 在 Forge 會被 CSP 擋下,而且一旦成功就是對外連線,會失去 Runs on Atlassian。
@@ -74,6 +75,7 @@ export function App() {
         setDoc({ v: 1, diagrams });
         setActiveId(diagrams[0].id);
         setDraft(diagrams[0].code);
+        setHeight(diagrams[0].height ?? 'auto');
       } catch (e) {
         if (!cancelled) setError(e instanceof Error ? e.message : String(e));
       } finally {
@@ -90,7 +92,9 @@ export function App() {
     [doc, activeId]
   );
 
-  const dirty = active !== null && active.code !== draft;
+  // 高度也算變更 —— 調完大小要能存下來,否則換頁就跑掉。
+  const dirty =
+    active !== null && (active.code !== draft || (active.height ?? 'auto') !== height);
 
   const selectDiagram = useCallback(
     (id: string) => {
@@ -98,6 +102,7 @@ export function App() {
       if (!next) return;
       setActiveId(id);
       setDraft(next.code);
+      setHeight(next.height ?? 'auto');
     },
     [doc]
   );
@@ -107,6 +112,7 @@ export function App() {
     setDoc((prev) => ({ v: 1, diagrams: [...prev.diagrams, created] }));
     setActiveId(created.id);
     setDraft(created.code);
+    setHeight('auto');
   }, [doc.diagrams.length]);
 
   const save = useCallback(async () => {
@@ -117,7 +123,9 @@ export function App() {
     const next: DiagramDoc = {
       v: 1,
       diagrams: doc.diagrams.map((d) =>
-        d.id === active.id ? { ...d, code: draft, updatedAt: new Date().toISOString() } : d
+        d.id === active.id
+          ? { ...d, code: draft, height, updatedAt: new Date().toISOString() }
+          : d
       ),
     };
 
@@ -174,8 +182,8 @@ export function App() {
           });
         }}
         copied={copied}
-        expanded={expanded}
-        onToggleExpand={() => setExpanded((v) => !v)}
+        height={height}
+        onHeightChange={setHeight}
       />
 
       {error && <div className="sm-banner sm-error">{error}</div>}
@@ -202,7 +210,10 @@ export function App() {
           </div>
         )}
 
-        <div className="sm-preview" style={expanded ? { height: 720 } : undefined}>
+        <div
+          className="sm-preview"
+          style={height !== 'auto' ? { height: Number(height) } : undefined}
+        >
           {ready ? (
             <MermaidViewer
               ref={viewer}

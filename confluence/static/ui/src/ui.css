@@ -70,6 +70,10 @@ body {
   /* 沒有外框、沒有底色。圖直接坐在頁面上,像一張插圖。 */
   background: transparent;
   color: var(--sm-fg);
+  /* 上方預留一條工具列高度的空白帶。工具列是絕對定位浮上來的,
+     不留這條的話它浮現時會蓋住圖表頂部;預留之後圖表不會被遮,
+     滑鼠移入也不會有內容跳動。 */
+  padding-top: 34px;
 }
 
 /* 工具列平時隱形。滑鼠移入或鍵盤 focus 進來才浮現 ——
@@ -95,8 +99,13 @@ body {
   transform: none;
 }
 
-/* 觸控裝置沒有 hover,常駐顯示才用得到。 */
+/* 觸控裝置沒有 hover,常駐顯示才用得到。
+   工具列回到一般流排版,就不需要上面那條預留帶了。 */
 @media (hover: none) {
+  .sm-figure {
+    padding-top: 0;
+  }
+
   .sm-figure-bar {
     position: static;
     opacity: 1;
@@ -188,6 +197,25 @@ body {
   display: none; /* 浮動工具列不需要撐開 */
 }
 
+/* ── 高度快捷與手動輸入 ── */
+.sm-h-preset {
+  min-width: 28px !important;
+  padding: 0 5px !important;
+  font-size: 11px !important;
+}
+
+.sm-h-input {
+  width: 58px;
+  height: 28px;
+  padding: 0 6px;
+  border: 1px solid var(--sm-border);
+  border-radius: 4px;
+  background: var(--sm-surface);
+  color: var(--sm-fg);
+  font: inherit;
+  font-size: 11px;
+}
+
 /* ── 原始碼檢視 ────────────────────────────────────── */
 
 .sm-figure-source {
@@ -219,6 +247,39 @@ body {
   cursor: pointer;
   font: inherit;
   font-size: 12px;
+}
+
+.sm-figure-source-head .sm-primary {
+  border-color: var(--sm-accent);
+  background: var(--sm-accent);
+  color: #fff;
+}
+
+.sm-figure-source-head .sm-primary:disabled {
+  border-color: var(--sm-border);
+  background: var(--sm-surface);
+  color: var(--sm-fg-muted);
+  cursor: default;
+}
+
+.sm-figure-source textarea {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  padding: 10px 12px;
+  resize: vertical;
+  background: transparent;
+  color: var(--sm-fg);
+  font-family: ui-monospace, Consolas, 'Cascadia Mono', monospace;
+  font-size: 12.5px;
+  line-height: 1.55;
+  tab-size: 2;
+}
+
+.sm-figure-source textarea:focus {
+  outline: 2px solid var(--sm-accent);
+  outline-offset: -2px;
 }
 
 .sm-figure-source pre {

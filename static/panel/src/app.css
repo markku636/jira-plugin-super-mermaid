@@ -227,3 +227,31 @@ body {
   min-height: 360px;
   min-width: 0;
 }
+
+/* 指定高度時圖表要填滿,否則設了高度只是下面多一塊空白。 */
+.sm-preview[style*='height'] {
+  min-height: 0;
+}
+
+.sm-preview[style*='height'] > * {
+  height: 100%;
+}
+
+/* ── 高度快捷與手動輸入 ── */
+.sm-h-preset {
+  min-width: 30px !important;
+  padding: 0 6px !important;
+  font-size: 11px !important;
+}
+
+.sm-h-input {
+  width: 62px;
+  height: 28px;
+  padding: 0 6px;
+  border: 1px solid var(--sm-border);
+  border-radius: 4px;
+  background: var(--sm-surface);
+  color: var(--sm-fg);
+  font: inherit;
+  font-size: 11px;
+}
