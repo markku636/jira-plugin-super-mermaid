@@ -12,30 +12,15 @@ const PLACEHOLDER = `flowchart LR
   A[Edit this macro] --> B[Paste Mermaid]
   B --> C[Save]`;
 
-/**
- * 依宿主表面色判斷明暗。
- *
- * 不用 prefers-color-scheme:那讀的是作業系統設定,跟 Confluence 當下的
- * 佈景主題無關 —— 淺色頁面裡冒出深色畫布就是這樣來的。
- * Forge context 會給 surfaceColor(宿主實際的表面顏色),量它的相對亮度最準。
- */
-function isDarkSurface(color?: string | null): boolean | null {
-  if (!color) return null;
-  const m = /^#?([0-9a-f]{6})$/i.exec(color.trim());
-  if (!m) return null;
-  const n = parseInt(m[1], 16);
-  const r = (n >> 16) & 255;
-  const g = (n >> 8) & 255;
-  const b = n & 255;
-  return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 < 0.5;
-}
-
 function Macro() {
   const viewer = useRef<MermaidViewerHandle | null>(null);
   const deps = useMermaidDeps();
 
   const [source, setSource] = useState<string | null>(null);
   const [configured, setConfigured] = useState(false);
+  // 預設一律淺色。不做主題自動偵測 —— 使用者明確要求預設不要暗黑,
+  // 而且自動偵測讀 prefers-color-scheme 是作業系統設定,跟 Confluence 佈景無關。
+  // 要暗色請按工具列的鈕。
   const [dark, setDark] = useState(false);
   const [showSource, setShowSource] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -47,18 +32,12 @@ function Macro() {
       // macro 的原始碼存在 config 參數裡,跟著頁面版本走 —— 複製頁面時會一起被複製。
       const ctx = (await view.getContext()) as {
         extension?: { config?: { source?: string } };
-        surfaceColor?: string | null;
-        theme?: { colorMode?: string } | null;
       };
       if (cancelled) return;
 
       const s = ctx.extension?.config?.source;
       setConfigured(Boolean(s && s.trim()));
       setSource(s && s.trim() ? s : PLACEHOLDER);
-
-      // colorMode 優先(明確),沒有就退回量 surfaceColor 的亮度,都沒有才當淺色。
-      const mode = ctx.theme?.colorMode;
-      setDark(mode === 'dark' ? true : mode === 'light' ? false : (isDarkSurface(ctx.surfaceColor) ?? false));
     })();
     return () => {
       cancelled = true;

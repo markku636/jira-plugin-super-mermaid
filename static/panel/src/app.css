@@ -106,24 +106,29 @@ body {
   flex-wrap: wrap;
 }
 
+/* 幽靈按鈕:小、輕、不搶戲,與 Confluence macro 的工具列一致。
+   議題面板是大區塊,工具列常駐即可(不像文件內嵌需要 hover 才浮現)。 */
 .sm-toolbar button {
-  min-width: 32px;
-  height: 32px;
+  min-width: 28px;
+  height: 28px;
   padding: 0 8px;
-  border: 1px solid var(--sm-border);
+  border: 0;
   border-radius: 4px;
-  background: var(--sm-surface);
-  color: var(--sm-fg);
+  background: transparent;
+  color: var(--sm-fg-muted);
   cursor: pointer;
   font: inherit;
+  font-size: 12px;
+  line-height: 1;
 }
 
 .sm-toolbar button:hover:not(:disabled) {
   background: var(--sm-surface-2);
+  color: var(--sm-fg);
 }
 
 .sm-toolbar button:disabled {
-  opacity: 0.45;
+  opacity: 0.35;
   cursor: default;
 }
 

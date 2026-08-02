@@ -30,7 +30,10 @@ export function App() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showSource, setShowSource] = useState(false);
+  // 預設一律淺色。不做 prefers-color-scheme 自動偵測 —— 那讀的是作業系統設定,
+  // 跟 Jira 當下的佈景無關,結果就是淺色頁面裡冒出深色畫布。要暗色請按工具列的鈕。
   const [dark, setDark] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   // 重依賴一律注入實例。若讓 lib 自己解析,它的第三段 fallback 是 CDN ——
   // 在 Forge 會被 CSP 擋下,而且一旦成功就是對外連線,會失去 Runs on Atlassian。
@@ -161,6 +164,13 @@ export function App() {
         onToggleDark={() => setDark((v) => !v)}
         showSource={showSource}
         onToggleSource={() => setShowSource((v) => !v)}
+        onCopySource={() => {
+          void navigator.clipboard?.writeText(draft).then(() => {
+            setCopied(true);
+            window.setTimeout(() => setCopied(false), 1500);
+          });
+        }}
+        copied={copied}
       />
 
       {error && <div className="sm-banner sm-error">{error}</div>}
@@ -195,6 +205,9 @@ export function App() {
               dark={dark}
               // 見 Toolbar.tsx:lib 內建工具列是繁中,這裡自建英文版
               toolbar={false}
+              // 不要網點畫布。那是繪圖編輯器的語彙,放在議題面板裡只是雜訊。
+              pattern="none"
+              solidColor={null}
               mermaid={mermaidSource}
               svgPanZoom={panZoomSource}
               // 自帶字型,絕不連 jsDelivr
