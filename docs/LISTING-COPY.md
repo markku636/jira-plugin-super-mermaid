@@ -153,12 +153,17 @@ Free, with no usage limits.
 | Pricing | Free |
 | Hosting | Cloud only |
 
-## 還缺的素材
+## 素材現況
 
-- [ ] App logo（正方形，兩個 app 可共用）
-- [ ] 每個 app 3 張 highlight 圖 + 螢幕截圖
-- [ ] End User Terms（Atlassian 有範本可改）
+> 上面這兩份文案就是 **2026-08-02 送審時實際送出的版本**。要改請走 listing 更新流程，
+> 不要以為改了這個檔案線上就會跟著變。
+
+- [x] App logo（`resources/logo.svg` + `logo-144.png` + `logo-512.png`，兩個 app 共用）
+- [x] 螢幕截圖（`screenshot/processed/jira-panel.webp`、`confluence-inline.webp`）
+- [x] End User Terms（用 Atlassian 範本）
+- [ ] **拖拉編輯的動態主視覺** —— 送審用的是靜態截圖，這是核准後要補的第一件事
+- [ ] 描述文案補上視覺編輯器 —— M3 完成於送審同日，現行文案還沒把它寫進去
 
 **截圖要注意的事**：靜態的渲染結果跟市集上另外 8 個 app 長得一模一樣。
-真正能區隔的畫面是「圖表嵌在 Confluence 內文中與文字混排」，以及
-「DevTools Network 面板空空如也」。後者沒有人這樣拍，但那正是你的賣點。
+真正能區隔的畫面是「拖拉編輯圖表」、「圖表嵌在 Confluence 內文中與文字混排」，以及
+「DevTools Network 面板空空如也」。最後那個沒有人這樣拍，但那正是你的賣點。

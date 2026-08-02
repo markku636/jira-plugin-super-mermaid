@@ -2,16 +2,22 @@
 
 目標：**先以免費名義上架**（2026-08-02 決定）。付費留待之後再說。
 
-> **先看這句**：書面作業（合作夥伴帳號、隱私權政策）可以現在就平行進行，
-> 但**在 M3 視覺編輯器完成之前不要送審**。目前的功能與市集上 8 個競品完全重疊，
-> 會被以「缺乏差異化」打回，重送要再等一輪 10–15 個工作天。
+> ## 現況：2026-08-02 兩份 listing 都已送審
+>
+> Jira 與 Confluence 兩個 app 都已 `forge deploy -e production`，
+> 兩份 Marketplace listing 都已送出審核，**現在是等待審核結果**（約 10–15 個工作天）。
+>
+> 送審前的四個阻斷項全部解除，包含當初標成 go/no-go 的 M3 視覺編輯器 ——
+> 這條原本寫著「M3 完成前不要送審，否則會被以缺乏差異化打回」，已經先做完才送。
+>
+> 接下來只剩三件事：等結果、被退件就依審查意見修、核准後看安裝數。
 
 ## 免費 vs 付費：這個決定省掉什麼
 
 選免費之後，下列項目**全部不需要**：
 
 - ❌ 公司網域 email —— 私有網域只在「付費 app 的 Partner Portal 存取權」被要求，
-  免費 app 用 hotmail 即可。`apps@markkulab.net` 現階段不必弄。
+  免費 app 用個人信箱即可。`apps@markkulab.net` 現階段不必弄。
 - ❌ `app.licensing.enabled` 與授權閘門程式碼 —— 免費 app 的 `license` 物件是 undefined
 - ❌ 稅務與收款資訊
 - ❌ 「production 每次安裝都計費」的顧慮
@@ -23,25 +29,27 @@
 
 ---
 
-## 阻斷項（不解決就無法進行）
+## 阻斷項（全部已解除）
 
 | # | 項目 | 現況 | 說明 |
 |---|---|---|---|
 | B1 | ~~公司網域 email~~ | ✅ 免除 | 改走免費後不再需要 |
-| B2 | **Marketplace 合作夥伴帳號** | ❌ 未申請 | 需簽 Marketplace Partner Agreement。免費 app 用現有 hotmail 即可 |
-| B3 | **app 從未在真實 Jira 跑過** | ❌ | 需要有效的 **Forge scoped token**：https://go.atlassian.com/forge-cli-api-token（舊式無 scope 的 token 會回 "API token is no longer valid"）。之後跑 `.\deploy.ps1 -Install` |
-| B4 | **M3 視覺編輯器** | ❌ 未開始 | **唯一的差異化。** 沒有它，這就是市集上第 9 個一樣的 mermaid 渲染器 |
+| B2 | Marketplace 合作夥伴帳號 | ✅ 已完成 | 送審的前置，沒有它連 listing 都建不了 |
+| B3 | app 在真實站台跑過 | ✅ 已完成 | `markku666.atlassian.net`，Jira 與 Confluence 兩個 app 的 development / production 都已部署並安裝驗證 |
+| B4 | M3 視覺編輯器 | ✅ 2026-08-02 完成 | **唯一的差異化。** `DrawEditor.tsx`，兩個 app 共用，拖拉結果無損序列化回 mermaid 原始碼 |
 
 ## 技術面（程式碼要改的）
 
-- [ ] `forge eligibility` 通過 → 拿到 **Runs on Atlassian** 徽章
+- [x] `forge eligibility` 通過 → 拿到 **Runs on Atlassian** 徽章
       免費 app 沒有營收要分，但徽章代表「零對外傳輸」，對企業客戶是信任訊號，
       而且維持它是免費的 —— 只要永遠不加 `permissions.external`。
-- [ ] 部署到正式環境
+      兩個 app 都 eligible，也證實 `permissions.content.styles: unsafe-inline` 不影響資格。
+- [x] 部署到正式環境（兩個 app 各自跑，Confluence 要在 `confluence/` 目錄下）
       ```powershell
-      forge deploy -e production
+      ./deploy.ps1 -Environment production
+      cd confluence; forge deploy -e production
       ```
-- [ ] 在 developer console 啟用 app 分享（sharing），並發布 developer space
+- [x] 在 developer console 啟用 app 分享（sharing），並發布 developer space（`Markku666`）
 
 > 授權（licensing）相關工作**免費 app 不需要**。之後若改付費，要補上
 > `app.licensing.enabled: true`、`context.license.active` 閘門，
@@ -54,26 +62,32 @@
 
 | 項目 | 內容 |
 |---|---|
-| API scopes | `read:jira-work` / `write:jira-work` —— 僅用於讀寫本 app 自己的 issue entity property（`com.markku.super-mermaid.diagrams`），儲存使用者建立的圖表原始碼 |
+| API scopes（Jira） | `read:jira-work` / `write:jira-work` —— 僅用於讀寫本 app 自己的 issue entity property（`com.markku.super-mermaid.diagrams`），儲存使用者建立的圖表原始碼 |
+| API scopes（Confluence） | `read:page:confluence` / `write:page:confluence` —— 僅用於把圖表原始碼寫回該頁面自己的 macro 參數（內文編輯用），不讀寫其他頁面 |
 | 遠端主機 | **無。** 本 app 不對外傳送任何資料，所有相依套件（mermaid、svg-pan-zoom、字型）皆隨 app 打包 |
-| 使用者資料 | 僅儲存使用者自行輸入的圖表文字，存放於 Atlassian 託管的 entity property，不離開 Atlassian 基礎設施 |
+| 使用者資料 | 僅儲存使用者自行輸入的圖表文字，Jira 存於 entity property、Confluence 存於 macro 參數，都不離開 Atlassian 基礎設施 |
 
 「無遠端主機」這點在審查時是加分項，也正是 Runs on Atlassian 的來源。**任何時候有人想加
 `permissions.external`，先想清楚代價是整份營收分潤。**
 
-**法務／支援欄位**
+**法務／支援欄位**（送審時已全部填妥）
 
-- [ ] 隱私權政策 URL（可掛在 markkulab.net 底下）
-- [ ] End User Terms / DPA —— Atlassian 有提供可改的範本，直接用
-- [ ] 支援管道與**承諾 24 小時內回覆**（這是付費 app 的要求，不是建議）
-- [ ] 文件 URL
+- [x] 隱私權政策 URL —— 用 repo 裡的 [PRIVACY.md](PRIVACY.md)，不必另外架站
+- [x] End User Terms / DPA —— 用 Atlassian 範本
+- [x] 支援管道 —— GitHub Issues；**承諾 24 小時內回覆**（付費 app 的硬要求，免費也照這個標準走）
+- [x] 文件 URL —— [GETTING-STARTED.md](GETTING-STARTED.md)
 
 **行銷素材**
 
-- [ ] Logo、橫幅、螢幕截圖
-- [ ] 標題與簡述、功能亮點、分類
-- [ ] **主視覺一定要是「拖拉編輯圖表」的動態畫面** —— 那是唯一能一眼區隔競品的東西。
-      靜態的渲染截圖跟其他 8 個 app 長得一模一樣。
+- [x] Logo（`resources/logo.svg` + `logo-144.png` + `logo-512.png`，兩個 app 共用）
+- [x] 螢幕截圖（`screenshot/processed/jira-panel.webp`、`confluence-inline.webp`）
+- [x] 標題與簡述、功能亮點、分類 —— 文案見 [LISTING-COPY.md](LISTING-COPY.md)
+- [ ] **主視覺換成「拖拉編輯圖表」的動態畫面** —— 送審用的是靜態截圖。
+      M3 已經做完，這是核准後可以立刻補強的第一件事：拖拉的畫面才是唯一能一眼
+      區隔另外 8 個競品的東西，靜態渲染截圖跟它們長得一模一樣。
+      同理 [LISTING-COPY.md](LISTING-COPY.md) 的描述文案目前主打
+      「Runs on Atlassian + 免費」，還沒把視覺編輯器寫進去（送審版即是如此，
+      要改請走 listing 更新流程，別直接覆蓋掉已送審的內容而不自知）。
 
 ## 定價
 
@@ -88,15 +102,18 @@
 
 ## 時程與後續義務
 
-- 審核約 **10–15 個工作天**（依當時案量浮動）
+- 審核約 **10–15 個工作天**（依當時案量浮動），2026-08-02 送出
 - production 部署後，在 listing 核准前無法安裝
 - 安裝數達 **100+** 後，需符合 Bug Bounty 計畫的安全標準
-- 2026-02-20 更新過 Cloud App Security Requirements，送審前確認一次最新版
+- 2026-02-20 更新過 Cloud App Security Requirements，每次改版前確認一次最新版
 
-## 建議順序
+## 送審後的待辦
 
-1. **現在就開始**（有前置時間，且不依賴程式碼）：B1 公司信箱 → B2 合作夥伴帳號 → 隱私權政策
-2. **平行進行**：B3 部署到開發站台，把 M1/M2 實際驗證過
-3. **關鍵路徑**：B4 視覺編輯器
-4. M3 完成後再做行銷素材（因為主視覺要錄視覺編輯的畫面）
-5. 最後才 `forge deploy -e production` 並送審
+1. **等審核結果。** 被退件不是意外，依審查意見修完重送即可，只是又是一輪 10–15 天。
+2. **核准後第一件事**：把 listing 主視覺換成拖拉編輯的動態畫面，
+   並把視覺編輯器寫進描述文案（現在的文案只講 Runs on Atlassian 與免費）。
+3. **blog 工具頁**：spec 已寫好放在
+   `blog/docs/specs/pending/jira-super-mermaid-tool-page.spec.md`，核准拿到 listing URL 後再做。
+4. **之後想改付費**：可行但會影響既有安裝者，且要補齊公司網域 email、
+   `app.licensing.enabled` 與授權閘門、稅務收款資訊。
+   屆時的策略建議是「檢視免費、視覺編輯付費」，讓未付費者仍看得到圖以形成擴散。
