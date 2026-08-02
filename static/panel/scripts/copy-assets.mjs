@@ -2,7 +2,7 @@
 //
 // 為什麼非做不可:lib 的 DEFAULT_VIRGIL_FONT_URL 指向 jsDelivr CDN。
 // 只要 sketch 主題被啟用,就會產生一次對外網路請求 —— 那會讓這個 app
-// 失去「Runs on Atlassian」資格(進而失去 100% 營收分潤),而且在 Forge
+// 失去「Runs on Atlassian」資格(等於失去「資料零外流」這個賣點),而且在 Forge
 // 的 font-src CSP 下本來就會被擋。
 // 解法是 <MermaidViewer fontUrl="./Virgil.woff2">,而檔案由這個腳本備妥。
 

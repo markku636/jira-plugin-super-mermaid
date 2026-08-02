@@ -6,7 +6,7 @@ import { MermaidViewer, type MermaidViewerHandle } from 'react-super-mermaid';
 // (lib 內建 Toolbar 硬寫繁中,國際市集會卡,兩邊都走自建。)
 import { Toolbar } from '../../../../static/panel/src/Toolbar';
 import { DrawEditor } from '../../../../static/panel/src/DrawEditor';
-import { buildMermaidLiveUrl, canShare } from '../../../../static/panel/src/shareLink';
+import { buildShareUrl, canShare } from '../../../../static/panel/src/shareLink';
 import { useMermaidDeps } from './useMermaidDeps';
 import { savePageMacroSource } from './savePageMacro';
 import './ui.css';
@@ -108,7 +108,7 @@ function Macro() {
           onShare={
             canShare()
               ? () => {
-                  void buildMermaidLiveUrl(source, dark)
+                  void buildShareUrl(source, dark)
                     .then((url) => navigator.clipboard?.writeText(url))
                     .then(() => {
                       setShared(true);

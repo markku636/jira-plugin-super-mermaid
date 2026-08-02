@@ -9,8 +9,8 @@
 | **Super Mermaid for Confluence** | 頁面**內文**中的 macro | 文件、架構圖、流程說明 |
 | **Super Mermaid for Jira** | 議題右側面板 | 議題相關的流程與時序圖 |
 
-> 為什麼是兩個而不是一個：Atlassian 規定同時支援兩個產品的 app 只能付費上架。
-> 拆開才能兩邊都免費。
+> 為什麼是兩個而不是一個：Atlassian 不接受同時支援兩個產品的 app 以免費 listing 上架，
+> 拆開才能兩邊都免費提供。兩個都免費，也都沒有用量限制。
 
 ---
 
@@ -76,6 +76,7 @@ forge install -s <你的站台>.atlassian.net -p jira
 | `−` `+` `Fit` `1:1` | 縮放與符合視窗 |
 | 搜尋框 `↑` `↓` | 在圖表中找文字並跳到該節點 |
 | `SVG` `PNG` | 匯出圖檔 |
+| 🔗 | 複製分享連結（圖表編碼在網址裡，開啟後會連到 Atlassian 以外的線上預覽頁；詳見下方說明） |
 | `Source` | 顯示／隱藏原始碼（僅 Jira） |
 | `Dark` `Light` | 切換深淺配色 |
 | `⛶` | 全螢幕 |
@@ -144,16 +145,24 @@ timeline、user journey、git graph。
 
 ---
 
-## 你的資料不會離開 Atlassian
+## 你的資料存在自己的站台裡
 
 這兩個 app 都取得 Atlassian 的 **Runs on Atlassian** 資格，代表：
 
-- **零對外連線。** 繪圖引擎、字型、所有相依套件都隨 app 打包，不從任何 CDN 載入。
+- **app 自己不對外連線。** 繪圖引擎、字型、所有相依套件都隨 app 打包，不從任何 CDN 載入。
 - 圖表內容只存在你自己的 Confluence 頁面或 Jira 議題裡，不經過任何第三方伺服器。
 - Confluence 版**連 API 權限都不需要**——它不呼叫任何 Confluence API。
 
 企業環境可以用瀏覽器的開發者工具 Network 面板自行查證：使用過程中不會有任何
 對外網域的請求。
+
+> **唯一的例外：工具列的「分享連結」🔗。**
+> 按下去會把目前這張圖編碼進一段
+> `https://blog.markkulab.net/tools/mermaid-preview#pako:…` 網址，複製到你的剪貼簿。
+> app 本身不會送出任何東西（所以 Network 面板還是空的），圖表內容也只放在網址 `#`
+> 之後、瀏覽器不會傳給伺服器。但那個預覽頁 **是你 Atlassian 站台以外的外部網站**——
+> 連結一旦被貼出去或打開，這張圖就離開了 Atlassian，而且拿到連結的人都看得到。
+> 不按這顆按鈕，就不會有任何東西出去。若你的組織不允許，請直接告知團隊不要使用它。
 
 ---
 

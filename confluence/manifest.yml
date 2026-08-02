@@ -2,7 +2,7 @@
 #
 # 為什麼不跟 Jira 版共用一個 app:
 # 跨產品(app.compatibility 同時宣告 jira + confluence)的 Forge app
-# 【只能付費上架,不支援免費 listing】。拆成兩個單產品 app,兩邊都能免費。
+# 【不支援免費 listing】。拆成兩個單產品 app,兩邊都能免費上架。
 # 代價是兩份 Marketplace listing 與兩次審核。
 #
 # 這個目錄自己是一個 Forge app,forge 指令要在 confluence/ 底下跑。

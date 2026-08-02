@@ -26,7 +26,7 @@ Marketplace 上已有 8 個以上的 Mermaid for Jira，**全部都是「貼語�
 | M4 上架 | 🟡 兩份 listing 已送審，等待審核結果 |
 
 這個 repo 現在裝了**兩個獨立的 Forge app** —— 跨產品 app（`app.compatibility` 同時宣告
-jira + confluence）只能付費上架，既然走免費就只能拆成兩個單產品 app，代價是兩份 listing
+jira + confluence）不接受免費 listing，所以拆成兩個單產品 app，代價是兩份 listing
 與兩次審核。細節見 [docs/MARKETPLACE.md](docs/MARKETPLACE.md)。
 
 | app | 位置 | app id 尾碼 | 模組 |
@@ -99,7 +99,7 @@ confluence/             Confluence app(獨立 Forge app,自己的 manifest 與 a
 **1. 資料存取不走 resolver。** 前端用 `@forge/bridge` 的 `requestJira` 直接讀寫 issue property，
 等於「以使用者身分」操作 —— Jira 權限模型自動生效，沒有編輯權的人寫入直接拿到 403。
 若改用 `api.asApp()`，就得自己重新實作一遍權限檢查，只會多一個出錯面。
-resolver 保留給之後真正需要伺服端的工作（授權檢查、跨 issue 查詢）。
+resolver 保留給之後真正需要伺服端的工作（跨 issue 查詢、webhook 觸發）。
 
 **2. 只存 mermaid 原始碼，不存 scene JSON。** 視覺編輯器的 round-trip 本來就是無損的，
 存兩份只會製造兩份真相。
@@ -112,8 +112,8 @@ resolver 保留給之後真正需要伺服端的工作（授權檢查、跨 issu
 ## 絕對不能碰的紅線：`permissions.external`
 
 「Runs on Atlassian」徽章的失格條件是 `permissions.external`、remotes、Connect 模組、
-providers、dynamic web triggers —— 而拿到這個徽章的 app **可以取得 100% 的 Marketplace 營收**
-（一般 app 要被抽成）。所以「零對外連線」不是技術潔癖，是真金白銀。
+providers、dynamic web triggers —— 這個徽章是**對外唯一講得清楚的信任訊號**：
+app 執行期不對外發任何請求。所以「app 零對外請求」不是技術潔癖，是這個 app 的賣點本身。
 
 已知的三個對外連線陷阱，全部已封住：
 
@@ -122,6 +122,12 @@ providers、dynamic web triggers —— 而拿到這個徽章的 app **可以取
 | lib 的 sketch 字型預設指向 jsDelivr | `fontUrl="./Virgil.woff2"` + `copy-assets.mjs` 隨檔出貨 |
 | lib 找不到 mermaid 時會 fallback 到 CDN | `mermaid={{ instance }}` 明確注入 |
 | 同上，svg-pan-zoom | `svgPanZoom={{ instance }}` 明確注入 |
+
+**但對外文案不能寫成「資料絕不離開 Atlassian」。** 工具列的 🔗 分享按鈕會產生一段
+`blog.markkulab.net/tools/mermaid-preview#pako:…` 網址寫進剪貼簿 —— 它不觸發任何請求
+（所以徽章資格不受影響，見 `shareLink.ts`），但只要有人打開那個連結，圖就到了
+Atlassian 以外的網站。說法一律停在「**app 自己不對外連線，要不要分享出去由使用者決定**」，
+且 listing / 隱私權政策 / 說明文件都要明講分享連結是站外的。
 
 反之，`permissions.content.styles: ['unsafe-inline']` **不影響**資格 —— 這是必要的，
 因為 mermaid 會往 SVG 塞 `<style>`，lib 也有 4 處 `document.createElement('style')` 注入，
@@ -142,27 +148,16 @@ forge eligibility
 3. `forge eligibility` —— 每次改 manifest 都要跑
 4. 真實 Jira 開發站台手動驗證，截圖歸檔到 `outputs/<主題>_<日期>/`
 5. **瀏覽器 Network 面板確認零外部請求** —— 比 CLI 更可信的實質驗證
+   （按下 🔗 分享時也要是零請求：它只寫剪貼簿，不開連結）
 
 Playwright 很難自動化 Jira 登入，M1–M3 以手動驗證加截圖為主，不假裝有自動化測試。
 
-## 授權與定價
+## 上架
 
-**免費上架**（2026-08-02 決定）。
+**免費，不設用量上限，全功能開放。** 要準備的是 Marketplace 合作夥伴帳號、隱私權政策、
+End User Terms、支援管道與送審，細節見 [docs/MARKETPLACE.md](docs/MARKETPLACE.md)。
 
-選免費直接省掉四件事：
+> Runs on Atlassian 徽章仍然值得維持 —— 它代表「app 本身零對外請求」，
+> 對企業客戶是信任訊號，而維持它的成本就只是**永遠不要加 `permissions.external`**。
 
-- 不需要公司網域 email —— 私有網域只在「付費 app 的 Partner Portal 存取權」被要求
-- 不需要 `app.licensing.enabled` 與授權閘門程式碼（免費 app 的 `license` 物件是 undefined）
-- 不需要稅務與收款資訊
-- 不需要顧慮「付費 app 在 production 的每次安裝都計費」
-
-仍然要的：Marketplace 合作夥伴帳號、隱私權政策、End User Terms、支援管道、送審。
-
-之後想改成付費是可行的，但會影響既有安裝者且要補齊上面整組。
-先靠免費把安裝數與評價養起來，再談收費。細節見 [docs/MARKETPLACE.md](docs/MARKETPLACE.md)。
-
-> Runs on Atlassian 徽章仍然值得維持。免費 app 沒有營收要分，
-> 但它代表「零對外傳輸」，對企業客戶是信任訊號，
-> 而維持它的成本就只是**永遠不要加 `permissions.external`**。
-
-repo 本身的授權條款仍未決定（sibling lib 是 MIT；改走免費後 MIT 不再有衝突，但仍需明確選定）。
+repo 本身的授權條款仍未決定（sibling lib 是 MIT，兩者不衝突，但仍需明確選定）。

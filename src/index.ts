@@ -5,8 +5,7 @@
 // 等同「以使用者身分」操作 —— Jira 的權限模型自動生效,沒有編輯權的人寫不進去。
 // 若改用 resolver + api.asApp(),就得自己重新實作一遍權限檢查,只會多一個出錯面。
 //
-// 這裡留給之後真正需要伺服端的工作:授權(licensing)檢查、跨 issue 查詢、
-// webhook 觸發等。
+// 這裡留給之後真正需要伺服端的工作:跨 issue 查詢、webhook 觸發等。
 
 import Resolver from '@forge/resolver';
 

@@ -123,12 +123,12 @@ if ($Install) {
 }
 
 # ── 7. Runs on Atlassian 資格檢查 ────────────────────────────
-# 這個徽章 = 100% Marketplace 營收分潤。任何時候只要有人加了
+# 這個徽章 = 對外唯一講得清楚的信任訊號(資料零外流)。任何時候只要有人加了
 # permissions.external / remotes / Connect 模組,就會在這裡被抓到。
 Step "檢查 Runs on Atlassian 資格"
 forge eligibility
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "  ⚠ 資格檢查未通過 —— 上架前務必解決,否則營收要被抽成。" -ForegroundColor Yellow
+    Write-Host "  ⚠ 資格檢查未通過 —— 上架前務必解決,否則會失去 Runs on Atlassian 徽章。" -ForegroundColor Yellow
 }
 
 Write-Host ""

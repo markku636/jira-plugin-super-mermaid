@@ -9,11 +9,23 @@ This policy covers both apps:
 
 ## Summary
 
-**These apps do not collect, transmit, or store any of your data outside your own
-Atlassian site.** There are no external servers, no analytics, and no third-party services.
+**These apps do not collect or transmit any of your data. Everything you type is stored
+inside your own Atlassian site.** There are no external servers, no analytics, and no
+third-party services. The only way anything travels outside your site is the share
+button, and only when you press it — see the exception below.
 
 Both apps hold Atlassian's **Runs on Atlassian** designation, which certifies that they
 run entirely on Atlassian-hosted infrastructure and declare no external egress.
+
+**One exception, and it is entirely under your control:** the toolbar has a **share
+button**. Pressing it encodes the current diagram into a
+`https://blog.markkulab.net/tools/mermaid-preview#pako:…` link and copies that link to
+your clipboard. The app itself sends nothing, and the diagram sits in the URL fragment
+(the part after `#`), which browsers never transmit to a server — so nothing is uploaded
+by pressing the button. But that preview page **is a website outside your Atlassian
+site**, so pasting the link somewhere or opening it does take the diagram out of Atlassian,
+and anyone holding the link can see the diagram. If you never press that button, nothing
+ever leaves.
 
 ## What the apps store
 
@@ -28,15 +40,17 @@ That is the complete list. Nothing else is recorded.
 
 - **No personal data is stored.** The apps do not record your name, email address,
   Atlassian account ID, IP address, or any other identifier.
-- **No data leaves your Atlassian site.** The apps make no network requests to any
-  external domain. The diagram rendering engine, fonts, and all dependencies are
-  bundled inside the app itself rather than loaded from a CDN.
+- **The apps make no network requests to any external domain.** The diagram rendering
+  engine, fonts, and all dependencies are bundled inside the app itself rather than
+  loaded from a CDN. The only way a diagram can travel outside your site is the share
+  button described above, which you press deliberately.
 - **No analytics or telemetry.** No usage tracking of any kind.
 - **No third-party services.** No external APIs, no external storage, no external compute.
 - **No cookies or local storage** beyond what Atlassian's own platform sets.
 
 You can verify this yourself: open your browser's developer tools, switch to the
-Network tab, and use the app. You will see no requests to any domain outside Atlassian.
+Network tab, and use the app. You will see no requests to any domain outside Atlassian —
+including when you press Share, because that button only writes to your clipboard.
 
 ## Permissions
 

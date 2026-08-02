@@ -3,7 +3,7 @@ import { MermaidViewer, type MermaidViewerHandle } from 'react-super-mermaid';
 import type { MermaidSource, SvgPanZoomSource } from 'react-super-mermaid';
 import { Toolbar } from './Toolbar';
 import { DrawEditor } from './DrawEditor';
-import { buildMermaidLiveUrl, canShare } from './shareLink';
+import { buildShareUrl, canShare } from './shareLink';
 import { getIssueKey, isNearLimit, loadDiagrams, saveDiagrams } from './storage';
 import { STARTER_CODE, type Diagram, type DiagramDoc } from './types';
 
@@ -190,7 +190,7 @@ export function App() {
         onShare={
           canShare()
             ? () => {
-                void buildMermaidLiveUrl(draft, dark)
+                void buildShareUrl(draft, dark)
                   .then((url) => navigator.clipboard?.writeText(url))
                   .then(() => {
                     setShared(true);

@@ -3,7 +3,11 @@
 兩份 listing 的內容。英文為主 —— Marketplace 是國際市場。
 
 **定位原則**：市集上已有 8 個以上的 Mermaid app，功能面高度重疊。不要跟它們比
-功能數量，主打兩件它們沒有的：**Runs on Atlassian 的零對外傳輸**，以及**免費**。
+功能數量，主打兩件它們沒有的：**Runs on Atlassian（app 本身零對外請求）**，以及**免費**。
+
+> **文案紅線**：不要再寫「zero data leaving your site」「never leave Atlassian」這種
+> 絕對句。工具列的分享按鈕會產生一段指向站外預覽頁的網址，那就是一條對外的路徑——
+> 說法要停在「app 自己不對外連線，要不要分享出去由使用者決定」。
 
 ---
 
@@ -18,7 +22,7 @@ Super Mermaid for Confluence
 **Summary / tagline**（一句話，會出現在搜尋結果）
 
 ```
-Draw flowcharts, sequence diagrams and Gantt charts inline — with zero data leaving your site.
+Draw flowcharts, sequence diagrams and Gantt charts inline — your diagrams stay in your own site.
 ```
 
 **Categories**
@@ -35,10 +39,12 @@ mindmaps, and more.
 
 WHY THIS ONE
 
-Your diagrams never leave Atlassian. Super Mermaid holds Atlassian's "Runs on Atlassian"
+Your diagrams live in your own site. Super Mermaid holds Atlassian's "Runs on Atlassian"
 designation: the rendering engine, fonts, and every dependency are bundled inside the app.
-It makes no network request to any external domain — you can verify that yourself in your
-browser's Network tab. It requests no Confluence API permissions at all.
+The app itself makes no network request to any external domain — you can verify that
+yourself in your browser's Network tab. The one exception is the toolbar's share button:
+it copies a link to your clipboard, and that link opens the diagram on a preview page
+outside Atlassian, so it only travels if you choose to share it. It requests no Confluence API permissions at all.
 
 For teams with data-residency or vendor-review requirements, that is usually the deciding
 factor.
@@ -60,6 +66,8 @@ WHAT YOU GET
 • Pan and zoom, pinch-to-zoom on touch devices
 • Search inside a diagram and jump to the matching node
 • Export to SVG or PNG
+• Share a diagram as a link — the diagram is encoded in the URL and opens on a preview
+  page outside Atlassian, so it only travels if you send it
 • Light and dark themes
 • Full support for Chinese, Japanese and Korean text in labels
 
@@ -69,7 +77,7 @@ Free, with no usage limits.
 **Highlights**（3 則，各需一張圖）
 
 1. `Diagrams inside your page` — macro 嵌在內文中、與文字混排的畫面
-2. `Nothing leaves Atlassian` — DevTools Network 面板顯示零外部請求
+2. `The app calls nothing external` — DevTools Network 面板顯示零外部請求
 3. `11 diagram types` — 多種圖表並排
 
 ---
@@ -85,7 +93,7 @@ Super Mermaid for Jira
 **Summary / tagline**
 
 ```
-Add flowcharts and sequence diagrams to any issue — with zero data leaving your site.
+Add flowcharts and sequence diagrams to any issue — your diagrams stay in your own site.
 ```
 
 **Categories**
@@ -102,10 +110,12 @@ diagram, state machine or Gantt chart.
 
 WHY THIS ONE
 
-Your diagrams never leave Atlassian. Super Mermaid holds Atlassian's "Runs on Atlassian"
+Your diagrams live in your own site. Super Mermaid holds Atlassian's "Runs on Atlassian"
 designation: the rendering engine, fonts, and every dependency are bundled inside the app.
-It makes no network request to any external domain — verify it yourself in your browser's
-Network tab.
+The app itself makes no network request to any external domain — verify it yourself in
+your browser's Network tab. The one exception is the toolbar's share button: it copies a
+link to your clipboard, and that link opens the diagram on a preview page outside
+Atlassian, so it only travels if you choose to share it.
 
 The only permissions it requests are read and write on Jira work, used solely to store your
 diagrams on the issue itself. Every request is made as the signed-in user, so Jira's own
@@ -128,6 +138,8 @@ WHAT YOU GET
 • Pan and zoom, pinch-to-zoom on touch devices
 • Search inside a diagram and jump to the matching node
 • Export to SVG or PNG
+• Share a diagram as a link — the diagram is encoded in the URL and opens on a preview
+  page outside Atlassian, so it only travels if you send it
 • Light and dark themes
 • Full support for Chinese, Japanese and Korean text in labels
 
@@ -137,7 +149,7 @@ Free, with no usage limits.
 **Highlights**
 
 1. `Diagrams on the issue` — issue 右側面板顯示流程圖
-2. `Nothing leaves Atlassian` — Network 面板零外部請求
+2. `The app calls nothing external` — Network 面板零外部請求
 3. `Several diagrams per issue` — 多分頁畫面
 
 ---

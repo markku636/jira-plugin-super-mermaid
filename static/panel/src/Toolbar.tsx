@@ -204,7 +204,11 @@ export function Toolbar({
         )}
       </span>
       {onShare && (
-        <button type="button" onClick={onShare} title="Share to mermaid.live">
+        <button
+          type="button"
+          onClick={onShare}
+          title="Copy share link — the diagram travels in the URL and opens on a preview page outside Atlassian"
+        >
           {shared ? '✓' : <IconShare />}
         </button>
       )}
