@@ -1,16 +1,21 @@
 /* Confluence macro 與設定面板的樣式。
    react-super-mermaid 的 CSS 由 lib 在 runtime 注入
-   (manifest 已宣告 permissions.content.styles: unsafe-inline)。 */
+   (manifest 已宣告 permissions.content.styles: unsafe-inline)。
+
+   設計方向:這是「文件裡的一張圖」,不是「頁面上的一個小工具」。
+   所以沒有外框、沒有網點畫布、沒有常駐的深色工具列 —— 那些是編輯器的語彙,
+   放進文章裡只會很吵。工具列平時隱形,滑過去才浮現。 */
 
 :root {
   --sm-fg: #172b4d;
   --sm-fg-muted: #626f86;
   --sm-border: #dfe1e6;
   --sm-surface: #ffffff;
-  --sm-surface-2: #f4f5f7;
+  --sm-surface-2: #f1f2f4;
   --sm-accent: #0c66e4;
   --sm-danger: #ae2e24;
   --sm-warn: #a54800;
+  --sm-radius: 6px;
 }
 
 .sm-dark {
@@ -30,30 +35,24 @@
 
 body {
   margin: 0;
+  background: transparent;
   font-family: ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Noto Sans TC',
     'Microsoft JhengHei', sans-serif;
   font-size: 14px;
   color: var(--sm-fg);
 }
 
-.sm-app {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  background: var(--sm-surface);
-  color: var(--sm-fg);
-}
-
 .sm-status {
-  padding: 24px;
+  padding: 20px 4px;
   color: var(--sm-fg-muted);
 }
 
 .sm-banner {
-  padding: 8px 10px;
-  border-radius: 4px;
-  font-size: 13px;
+  margin-bottom: 6px;
+  padding: 6px 10px;
+  border-radius: var(--sm-radius);
   background: var(--sm-surface-2);
+  font-size: 13px;
 }
 
 .sm-error {
@@ -64,74 +63,177 @@ body {
   color: var(--sm-warn);
 }
 
-/* ── 工具列(與 Jira 版共用元件,樣式在此鏡像) ── */
+/* ── 圖(文件裡的一張圖) ────────────────────────────── */
+
+.sm-figure {
+  position: relative;
+  /* 沒有外框、沒有底色。圖直接坐在頁面上,像一張插圖。 */
+  background: transparent;
+  color: var(--sm-fg);
+}
+
+/* 工具列平時隱形。滑鼠移入或鍵盤 focus 進來才浮現 ——
+   讀者看文章時不該被一排按鈕干擾,要用的人一靠近就有。 */
+.sm-figure-bar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity 120ms ease, transform 120ms ease;
+  padding: 4px;
+  border-radius: var(--sm-radius);
+  background: color-mix(in srgb, var(--sm-surface) 92%, transparent);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 1px 3px rgba(9, 30, 66, 0.12);
+}
+
+.sm-figure:hover .sm-figure-bar,
+.sm-figure:focus-within .sm-figure-bar {
+  opacity: 1;
+  transform: none;
+}
+
+/* 觸控裝置沒有 hover,常駐顯示才用得到。 */
+@media (hover: none) {
+  .sm-figure-bar {
+    position: static;
+    opacity: 1;
+    transform: none;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    margin-bottom: 4px;
+  }
+}
+
+.sm-figure-body {
+  /* 不設 min-height。manifest 已移除 viewportSize,macro 會依內容自動縮放;
+     這裡再鎖死高度就會把那個空白黑框帶回來。 */
+  min-width: 0;
+}
+
+/* ── 工具列按鈕(小、輕、不搶戲) ────────────────────── */
+
 .sm-toolbar {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   flex-wrap: wrap;
 }
 
 .sm-toolbar button {
-  min-width: 32px;
-  height: 32px;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 7px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--sm-fg-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.sm-toolbar button:hover:not(:disabled) {
+  background: var(--sm-surface-2);
+  color: var(--sm-fg);
+}
+
+.sm-toolbar button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.sm-toolbar button[aria-pressed='true'] {
+  background: color-mix(in srgb, var(--sm-accent) 12%, transparent);
+  color: var(--sm-accent);
+}
+
+.sm-search {
+  height: 28px;
+  width: 110px;
   padding: 0 8px;
+  border: 1px solid var(--sm-border);
+  border-radius: 4px;
+  background: var(--sm-surface);
+  color: var(--sm-fg);
+  font: inherit;
+  font-size: 12px;
+}
+
+.sm-hits {
+  padding: 0 4px;
+  color: var(--sm-fg-muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.sm-sep {
+  width: 1px;
+  height: 16px;
+  background: var(--sm-border);
+  margin: 0 3px;
+}
+
+.sm-spacer {
+  display: none; /* 浮動工具列不需要撐開 */
+}
+
+/* ── 原始碼檢視 ────────────────────────────────────── */
+
+.sm-figure-source {
+  margin-top: 8px;
+  border: 1px solid var(--sm-border);
+  border-radius: var(--sm-radius);
+  background: var(--sm-surface-2);
+  overflow: hidden;
+}
+
+.sm-figure-source-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--sm-border);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--sm-fg-muted);
+}
+
+.sm-figure-source-head button {
+  height: 26px;
+  padding: 0 10px;
   border: 1px solid var(--sm-border);
   border-radius: 4px;
   background: var(--sm-surface);
   color: var(--sm-fg);
   cursor: pointer;
   font: inherit;
-}
-
-.sm-toolbar button:hover:not(:disabled) {
-  background: var(--sm-surface-2);
-}
-
-.sm-toolbar button:disabled {
-  opacity: 0.45;
-  cursor: default;
-}
-
-.sm-toolbar button[aria-pressed='true'] {
-  border-color: var(--sm-accent);
-  color: var(--sm-accent);
-}
-
-.sm-search {
-  height: 32px;
-  padding: 0 8px;
-  border: 1px solid var(--sm-border);
-  border-radius: 4px;
-  background: var(--sm-surface);
-  color: var(--sm-fg);
-  font: inherit;
-  min-width: 140px;
-}
-
-.sm-hits {
-  color: var(--sm-fg-muted);
   font-size: 12px;
-  font-variant-numeric: tabular-nums;
 }
 
-.sm-sep {
-  width: 1px;
-  height: 20px;
-  background: var(--sm-border);
-  margin: 0 4px;
+.sm-figure-source pre {
+  margin: 0;
+  padding: 10px 12px;
+  overflow-x: auto;
+  font-family: ui-monospace, Consolas, 'Cascadia Mono', monospace;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--sm-fg);
 }
 
-.sm-spacer {
-  flex: 1;
+.sm-figure-hint {
+  margin: 0;
+  padding: 0 12px 10px;
+  font-size: 11.5px;
+  color: var(--sm-fg-muted);
 }
 
-.sm-preview {
-  min-height: 320px;
-  min-width: 0;
-}
+/* ── 設定面板 ──────────────────────────────────────── */
 
-/* ── 設定面板 ── */
 .sm-config {
   display: flex;
   flex-direction: column;
@@ -147,15 +249,20 @@ body {
 .sm-config textarea {
   width: 100%;
   resize: vertical;
-  padding: 8px;
+  padding: 10px;
   border: 1px solid var(--sm-border);
-  border-radius: 4px;
+  border-radius: var(--sm-radius);
   background: var(--sm-surface-2);
   color: var(--sm-fg);
   font-family: ui-monospace, Consolas, 'Cascadia Mono', monospace;
   font-size: 13px;
   line-height: 1.5;
   tab-size: 2;
+}
+
+.sm-config textarea:focus {
+  outline: 2px solid var(--sm-accent);
+  outline-offset: -1px;
 }
 
 .sm-config-hint {
@@ -171,11 +278,18 @@ body {
 
 .sm-config-actions button {
   height: 32px;
-  padding: 0 14px;
+  padding: 0 16px;
   border: 0;
   border-radius: 4px;
   background: var(--sm-accent);
   color: #fff;
   cursor: pointer;
   font: inherit;
+  font-weight: 500;
+}
+
+.sm-config-actions button:disabled {
+  background: var(--sm-surface-2);
+  color: var(--sm-fg-muted);
+  cursor: default;
 }

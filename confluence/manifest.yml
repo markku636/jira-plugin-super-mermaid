@@ -19,7 +19,9 @@ modules:
       icon: resource:icons;icon.svg
       # block = 獨立區塊(預設)。Jira 只能側邊面板,Confluence 這裡能真正嵌在內文。
       layout: block
-      viewportSize: large
+      # 刻意【不】設 viewportSize。官方文件明講:設了它就會關閉自動調整高度。
+      # 設 large 的後果是 macro 被鎖成一個固定大框,圖表下方留一大塊空白,
+      # 在文件裡看起來像貼了一塊突兀的黑色區塊。省略才會依內容自動縮放。
       categories:
         - visuals
         - formatting

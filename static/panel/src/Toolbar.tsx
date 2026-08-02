@@ -14,15 +14,24 @@ interface Props {
   viewer: React.RefObject<MermaidViewerHandle | null>;
   dark: boolean;
   onToggleDark: () => void;
-  /**
-   * 原始碼切換。省略則不顯示該按鈕 —— Confluence macro 的編輯走設定面板,
-   * 檢視端沒有可切換的原始碼,不該出現一顆按了沒反應的鈕。
-   */
+  /** 原始碼切換。省略則不顯示該按鈕 —— 不該出現一顆按了沒反應的鈕。 */
   showSource?: boolean;
   onToggleSource?: () => void;
+  /** 一鍵複製 mermaid 原始碼。省略則不顯示。 */
+  onCopySource?: () => void;
+  /** 複製成功的短暫回饋。 */
+  copied?: boolean;
 }
 
-export function Toolbar({ viewer, dark, onToggleDark, showSource, onToggleSource }: Props) {
+export function Toolbar({
+  viewer,
+  dark,
+  onToggleDark,
+  showSource,
+  onToggleSource,
+  onCopySource,
+  copied,
+}: Props) {
   const [term, setTerm] = useState('');
   // SearchState.current 是 1-based,無命中時為 0。
   const [hits, setHits] = useState<SearchState | null>(null);
@@ -79,6 +88,11 @@ export function Toolbar({ viewer, dark, onToggleDark, showSource, onToggleSource
 
       <span className="sm-sep" />
 
+      {onCopySource && (
+        <button type="button" onClick={onCopySource} title="Copy Mermaid source">
+          {copied ? '✓ Copied' : 'Copy'}
+        </button>
+      )}
       <button type="button" onClick={() => viewer.current?.downloadSvg()} title="Download SVG">
         SVG
       </button>
