@@ -213,6 +213,9 @@ export function App() {
               // 不要網點畫布。那是繪圖編輯器的語彙,放在議題面板裡只是雜訊。
               pattern="none"
               solidColor={null}
+              // 全螢幕在 Forge iframe 內做不到(position: fixed 只會填滿 iframe),
+              // 連 F 快捷鍵一併關掉,不留會壞的入口。放大請用工具列的 ⤢。
+              fullscreen={false}
               mermaid={mermaidSource}
               svgPanZoom={panZoomSource}
               // 自帶字型,絕不連 jsDelivr

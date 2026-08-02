@@ -107,6 +107,11 @@ function Macro() {
             // 文件內嵌的圖不該有網點畫布 —— 那是編輯器的語彙,放進文章裡很吵。
             pattern="none"
             solidColor={null}
+            // 全螢幕在 Forge 裡做不到:lib 用 position: fixed 覆蓋「視窗」,
+            // 而 iframe 內的視窗就是那個小框,按下去只會把圖縮進去。
+            // 關掉整個功能(含 F 快捷鍵),不留一個按了會壞的入口。
+            // 放大請用工具列的 ⤢ 或設定面板的 Height。
+            fullscreen={false}
             mermaid={deps.mermaid}
             svgPanZoom={deps.svgPanZoom}
             // 自帶字型,絕不連 jsDelivr(見 copy-assets.mjs)

@@ -15,13 +15,13 @@ const STARTER = `flowchart LR
  * 儲存走 view.submit(),Confluence 會把值寫進 macro 的 config 參數,
  * 跟著頁面版本一起儲存。macro.tsx 再用 view.getContext() 讀回來。
  */
-/** 圖表高度。auto = 依內容自動撐開(預設)。 */
-const HEIGHTS = [
-  { value: 'auto', label: 'Auto (fit content)' },
-  { value: '320', label: 'Small (320px)' },
-  { value: '480', label: 'Medium (480px)' },
-  { value: '720', label: 'Large (720px)' },
-  { value: '960', label: 'Extra large (960px)' },
+/** 高度預設組。auto = 依內容自動撐開(預設);其餘為像素值,也可手動輸入任意值。 */
+const PRESETS = [
+  { value: 'auto', label: 'Auto' },
+  { value: '320', label: 'S' },
+  { value: '480', label: 'M' },
+  { value: '720', label: 'L' },
+  { value: '960', label: 'XL' },
 ] as const;
 
 function Config() {
@@ -84,13 +84,33 @@ function Config() {
       <label className="sm-config-label" htmlFor="sm-height">
         Height
       </label>
-      <select id="sm-height" value={height} onChange={(e) => setHeight(e.target.value)}>
-        {HEIGHTS.map((h) => (
-          <option key={h.value} value={h.value}>
-            {h.label}
-          </option>
+      <div className="sm-config-height">
+        {PRESETS.map((p) => (
+          <button
+            key={p.value}
+            type="button"
+            aria-pressed={height === p.value}
+            onClick={() => setHeight(p.value)}
+          >
+            {p.label}
+          </button>
         ))}
-      </select>
+        <input
+          id="sm-height"
+          type="number"
+          min={120}
+          max={4000}
+          step={20}
+          placeholder="Custom"
+          // 清空輸入框等同回到 Auto —— 不要留一個空字串當高度。
+          value={height === 'auto' ? '' : height}
+          onChange={(e) => setHeight(e.target.value === '' ? 'auto' : e.target.value)}
+        />
+        <span className="sm-config-unit">px</span>
+      </div>
+      <p className="sm-config-hint">
+        Auto fits the diagram. Presets and any custom value are saved with this macro.
+      </p>
       {error && <div className="sm-banner sm-error">Save failed: {error}</div>}
       <div className="sm-config-actions">
         <button type="button" onClick={() => void save()} disabled={saving}>
