@@ -25,11 +25,13 @@ modules:
         - formatting
       config:
         resource: config
-        parameters:
-          # mermaid 原始碼存在 macro 參數裡,跟著頁面版本走。
-          # 不用 Forge storage:圖表屬於這一頁,複製頁面時該一起被複製。
-          - identifier: source
-            type: string
+        # 刻意【不】宣告 parameters。
+        # 宣告的 parameters 是給 UI Kit 自動生成設定表單用的,而且會驗證 payload;
+        # mermaid 原始碼是多行文字,type: string 的驗證會擋下來(Save 出錯的成因)。
+        # Custom UI 的設定面板自己畫,view.submit() 給什麼就原樣存進 guestParams。
+        #
+        # 原始碼存在 macro 參數裡,跟著頁面版本走 —— 不用 Forge storage,
+        # 因為圖表屬於這一頁,複製頁面時該一起被複製。
   function:
     - key: resolver
       handler: index.handler

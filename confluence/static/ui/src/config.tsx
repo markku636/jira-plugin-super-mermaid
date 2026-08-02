@@ -17,6 +17,23 @@ const STARTER = `flowchart LR
  */
 function Config() {
   const [source, setSource] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  // 不要用 void view.submit(...) 把錯誤吞掉 —— 那會讓使用者只看到一個
+  // 沒頭沒尾的失敗。把真正的訊息顯示出來。
+  const [error, setError] = useState<string | null>(null);
+
+  const save = async () => {
+    setSaving(true);
+    setError(null);
+    try {
+      await view.submit({ source });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+      console.error('[super-mermaid] view.submit failed', e);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -50,9 +67,10 @@ function Config() {
         Supports flowchart, sequence, class, state, ER, gantt, pie, mindmap, timeline, journey and
         git graph.
       </p>
+      {error && <div className="sm-banner sm-error">Save failed: {error}</div>}
       <div className="sm-config-actions">
-        <button type="button" onClick={() => void view.submit({ source })}>
-          Save
+        <button type="button" onClick={() => void save()} disabled={saving}>
+          {saving ? 'Saving…' : 'Save'}
         </button>
       </div>
     </div>
