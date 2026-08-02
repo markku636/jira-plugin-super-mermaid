@@ -411,3 +411,72 @@ body {
   color: var(--sm-fg-muted);
   cursor: default;
 }
+
+/* ── 圖示按鈕(沿用 VS Code 版的圖示,讓三個宿主一致) ── */
+.sm-toolbar button svg {
+  display: block;
+}
+
+.sm-toolbar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sm-zoom-level {
+  min-width: 42px !important;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── ⋯ 選單:把「設定一次就不太動」的顯示高度收起來,不佔工具列寬度 ── */
+.sm-more-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.sm-more-pop {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 10;
+  min-width: 210px;
+  padding: 10px;
+  border: 1px solid var(--sm-border);
+  border-radius: 6px;
+  background: var(--sm-surface);
+  box-shadow: 0 8px 20px rgba(9, 30, 66, 0.18);
+}
+
+.sm-more-title {
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--sm-fg-muted);
+}
+
+.sm-more-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.sm-more-row + .sm-more-row {
+  margin-top: 6px;
+}
+
+.sm-more-row .sm-h-preset {
+  border: 1px solid var(--sm-border) !important;
+}
+
+.sm-more-row .sm-h-input {
+  width: 100%;
+  flex: 1;
+}
+
+.sm-more-unit {
+  font-size: 11px;
+  color: var(--sm-fg-muted);
+}

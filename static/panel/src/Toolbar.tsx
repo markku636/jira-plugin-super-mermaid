@@ -1,34 +1,43 @@
-// 自建的英文工具列。
+// 共用工具列(Jira 面板與 Confluence macro 都用這一份)。
 //
-// 為什麼不用 lib 內建的 <Toolbar>:react-super-mermaid 的 UI 字串硬寫繁體中文
-// (樣式 / 搜尋 / 匯出中… / 全螢幕)。Atlassian Marketplace 是國際市場,中文工具列
-// 是上架級的阻礙。MermaidViewerHandle 已暴露 24 個命令式方法,足以完整重建,
-// 所以這裡走 toolbar={false} + 自建,零上游改動風險。
+// 圖示與 tooltip 文案刻意抄自 VS Code 版 Super Mermaid,讓三個宿主體驗一致。
+// 兩個刻意的差異:
+//   1. 沒有全螢幕。lib 的 toggleFullscreen 用 position: fixed 覆蓋「視窗」,
+//      而 Forge 裡的視窗就是那個 iframe —— 按下去只會把圖縮進小框。
+//      能做的是設定高度,所以「放大」在這裡就是右邊那組高度控制。
+//   2. 多了高度快捷與手動輸入,那是 iframe 宿主特有的需求。
 //
-// (長期正解是替 lib 加一個 labels prop,blog 與 VS Code 擴充也會一起受益。)
+// 也不用 lib 內建的 <Toolbar>:它的 UI 字串硬寫繁體中文,國際市集會卡。
 
 import { useState } from 'react';
 import type { MermaidViewerHandle, SearchState } from 'react-super-mermaid';
+import {
+  IconCode,
+  IconCopy,
+  IconDownload,
+  IconFit,
+  IconMore,
+  IconSearch,
+  IconShare,
+  IconTheme,
+  IconZoomIn,
+  IconZoomOut,
+} from './icons';
 
 interface Props {
   viewer: React.RefObject<MermaidViewerHandle | null>;
   dark: boolean;
   onToggleDark: () => void;
-  /** 原始碼切換。省略則不顯示該按鈕 —— 不該出現一顆按了沒反應的鈕。 */
+  /** 原始碼切換。省略則不顯示 —— 不該出現一顆按了沒反應的鈕。 */
   showSource?: boolean;
   onToggleSource?: () => void;
   /** 一鍵複製 mermaid 原始碼。省略則不顯示。 */
   onCopySource?: () => void;
-  /** 複製成功的短暫回饋。 */
   copied?: boolean;
-  /**
-   * 顯示高度。'auto' = 依內容撐開,其餘為像素字串。
-   *
-   * 這裡刻意【不】提供 lib 的 toggleFullscreen():它靠 position: fixed 覆蓋視窗,
-   * 但在 Forge 裡「視窗」就是那個 iframe —— 結果是圖被塞進原本的小框裡縮成一團。
-   * iframe 內做不到真正的全螢幕,能做的是把內容撐高,讓自動調整高度的
-   * macro / 面板跟著長高。所以「放大」在這裡就是「設定高度」。
-   */
+  /** 產生 mermaid.live 分享連結並複製。省略則不顯示。 */
+  onShare?: () => void;
+  shared?: boolean;
+  /** 顯示高度。'auto' = 依內容撐開,其餘為像素字串。 */
   height?: string;
   onHeightChange?: (value: string) => void;
 }
@@ -51,10 +60,14 @@ export function Toolbar({
   onToggleSource,
   onCopySource,
   copied,
+  onShare,
+  shared,
   height,
   onHeightChange,
 }: Props) {
   const [term, setTerm] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   // SearchState.current 是 1-based,無命中時為 0。
   const [hits, setHits] = useState<SearchState | null>(null);
 
@@ -68,62 +81,100 @@ export function Toolbar({
     setHits(viewer.current?.search(value) ?? null);
   };
 
-  const step = (dir: 'next' | 'prev') => {
-    setHits((dir === 'next' ? viewer.current?.next() : viewer.current?.prev()) ?? null);
-  };
-
   return (
     <div className="sm-toolbar" role="toolbar" aria-label="Diagram controls">
-      <button type="button" onClick={() => viewer.current?.zoomOut()} title="Zoom out">
-        −
+      <button type="button" onClick={() => viewer.current?.zoomOut()} title="Zoom out (-)">
+        <IconZoomOut />
       </button>
-      <button type="button" onClick={() => viewer.current?.zoomIn()} title="Zoom in">
-        +
+      <button
+        type="button"
+        className="sm-zoom-level"
+        onClick={() => viewer.current?.actualSize()}
+        title="Click for actual size (1)"
+      >
+        {viewer.current?.getZoomPercent() ?? 100}%
       </button>
-      <button type="button" onClick={() => viewer.current?.fit()} title="Fit to view">
-        Fit
+      <button type="button" onClick={() => viewer.current?.zoomIn()} title="Zoom in (+)">
+        <IconZoomIn />
       </button>
-      <button type="button" onClick={() => viewer.current?.actualSize()} title="Actual size">
-        1:1
+      <button
+        type="button"
+        onClick={() => viewer.current?.fit()}
+        title="Fit to view (0, or double-click canvas)"
+      >
+        <IconFit />
       </button>
 
       <span className="sm-sep" />
 
-      <input
-        className="sm-search"
-        type="search"
-        placeholder="Search…"
-        value={term}
-        onChange={(e) => runSearch(e.target.value)}
-      />
-      <button type="button" onClick={() => step('prev')} disabled={!hits?.total} title="Previous match">
-        ↑
+      <button
+        type="button"
+        aria-pressed={searchOpen}
+        onClick={() => {
+          const next = !searchOpen;
+          setSearchOpen(next);
+          if (!next) runSearch('');
+        }}
+        title="Find in diagram (/)"
+      >
+        <IconSearch />
       </button>
-      <button type="button" onClick={() => step('next')} disabled={!hits?.total} title="Next match">
-        ↓
-      </button>
-      {hits && hits.total > 0 && (
-        <span className="sm-hits">
-          {hits.current}/{hits.total}
-        </span>
+      {searchOpen && (
+        <>
+          <input
+            className="sm-search"
+            type="search"
+            autoFocus
+            placeholder="Find…"
+            value={term}
+            onChange={(e) => runSearch(e.target.value)}
+          />
+          <button
+            type="button"
+            onClick={() => setHits(viewer.current?.prev() ?? null)}
+            disabled={!hits?.total}
+            title="Previous match"
+          >
+            ↑
+          </button>
+          <button
+            type="button"
+            onClick={() => setHits(viewer.current?.next() ?? null)}
+            disabled={!hits?.total}
+            title="Next match"
+          >
+            ↓
+          </button>
+          {hits && hits.total > 0 && (
+            <span className="sm-hits">
+              {hits.current}/{hits.total}
+            </span>
+          )}
+        </>
       )}
 
       <span className="sm-sep" />
 
-      {onCopySource && (
-        <button type="button" onClick={onCopySource} title="Copy Mermaid source">
-          {copied ? '✓ Copied' : 'Copy'}
-        </button>
-      )}
-      <button type="button" onClick={() => viewer.current?.downloadSvg()} title="Download SVG">
+      <button
+        type="button"
+        onClick={() => void viewer.current?.downloadPng()}
+        title="Export diagram… (PNG)"
+      >
+        <IconDownload />
+      </button>
+      <button type="button" onClick={() => viewer.current?.downloadSvg()} title="Export as SVG">
         SVG
       </button>
-      <button type="button" onClick={() => void viewer.current?.downloadPng()} title="Download PNG">
-        PNG
-      </button>
-
-      <span className="sm-spacer" />
-
+      {onShare && (
+        <button type="button" onClick={onShare} title="Share to mermaid.live">
+          {shared ? '✓' : <IconShare />}
+        </button>
+      )}
+      {onCopySource && (
+        <button type="button" onClick={onCopySource} title="Copy Mermaid source">
+          {copied ? '✓' : <IconCopy />}
+        </button>
+      )}
       {onToggleSource && (
         <button
           type="button"
@@ -131,40 +182,63 @@ export function Toolbar({
           aria-pressed={showSource}
           title="Toggle Mermaid source"
         >
-          {showSource ? 'Hide source' : 'Source'}
+          <IconCode />
         </button>
       )}
       <button type="button" onClick={onToggleDark} aria-pressed={dark} title="Toggle dark mode">
-        {dark ? 'Light' : 'Dark'}
+        <IconTheme />
       </button>
+
+      {/* 高度控制收進 ⋯ 選單。它是「設定一次就不太動」的東西,
+          常駐在工具列上會把一整排擠爆,尤其 Confluence 那個浮動列。
+          VS Code 版同樣有一顆 More,收在這裡也維持一致。 */}
       {onHeightChange && (
-        <>
-          <span className="sm-sep" />
-          {HEIGHT_PRESETS.map((p) => (
-            <button
-              key={p.value}
-              type="button"
-              className="sm-h-preset"
-              aria-pressed={height === p.value}
-              onClick={() => onHeightChange(p.value)}
-              title={p.value === 'auto' ? 'Fit to content' : `${p.value}px tall`}
-            >
-              {p.label}
-            </button>
-          ))}
-          <input
-            className="sm-h-input"
-            type="number"
-            min={120}
-            max={4000}
-            step={20}
-            placeholder="px"
-            title="Custom height in pixels"
-            // 清空等同回到 Auto —— 不要留一個空字串當高度。
-            value={height && height !== 'auto' ? height : ''}
-            onChange={(e) => onHeightChange(e.target.value === '' ? 'auto' : e.target.value)}
-          />
-        </>
+        <span className="sm-more-wrap">
+          <button
+            type="button"
+            aria-pressed={moreOpen}
+            aria-expanded={moreOpen}
+            onClick={() => setMoreOpen((v) => !v)}
+            title="More… (display size)"
+          >
+            <IconMore />
+          </button>
+
+          {moreOpen && (
+            <div className="sm-more-pop" role="group" aria-label="Display size">
+              <div className="sm-more-title">Display height</div>
+              <div className="sm-more-row">
+                {HEIGHT_PRESETS.map((p) => (
+                  <button
+                    key={p.value}
+                    type="button"
+                    className="sm-h-preset"
+                    aria-pressed={height === p.value}
+                    onClick={() => onHeightChange(p.value)}
+                    title={p.value === 'auto' ? 'Fit height to content' : `${p.value}px tall`}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+              <div className="sm-more-row">
+                <input
+                  className="sm-h-input"
+                  type="number"
+                  min={120}
+                  max={4000}
+                  step={20}
+                  placeholder="Custom"
+                  title="Custom height in pixels"
+                  // 清空等同回到 Auto —— 不要留一個空字串當高度。
+                  value={height && height !== 'auto' ? height : ''}
+                  onChange={(e) => onHeightChange(e.target.value === '' ? 'auto' : e.target.value)}
+                />
+                <span className="sm-more-unit">px</span>
+              </div>
+            </div>
+          )}
+        </span>
       )}
     </div>
   );

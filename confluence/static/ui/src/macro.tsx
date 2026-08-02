@@ -5,6 +5,7 @@ import { MermaidViewer, type MermaidViewerHandle } from 'react-super-mermaid';
 // 共用 Jira app 的英文工具列 —— 不重複維護兩份。
 // (lib 內建 Toolbar 硬寫繁中,國際市集會卡,兩邊都走自建。)
 import { Toolbar } from '../../../../static/panel/src/Toolbar';
+import { buildMermaidLiveUrl, canShare } from '../../../../static/panel/src/shareLink';
 import { useMermaidDeps } from './useMermaidDeps';
 import { savePageMacroSource } from './savePageMacro';
 import './ui.css';
@@ -28,6 +29,7 @@ function Macro() {
   // 工具列的快捷則是當下的即時調整。auto = 依內容撐開。
   const [height, setHeight] = useState('auto');
   const [copied, setCopied] = useState(false);
+  const [shared, setShared] = useState(false);
   const [error, setError] = useState<string | null>(null);
   // 內嵌編輯:draft 是編輯中的文字,source 是目前渲染的內容。
   const [draft, setDraft] = useState('');
@@ -101,6 +103,20 @@ function Macro() {
           onToggleSource={() => setShowSource((v) => !v)}
           onCopySource={copySource}
           copied={copied}
+          onShare={
+            canShare()
+              ? () => {
+                  void buildMermaidLiveUrl(source, dark)
+                    .then((url) => navigator.clipboard?.writeText(url))
+                    .then(() => {
+                      setShared(true);
+                      window.setTimeout(() => setShared(false), 1800);
+                    })
+                    .catch((e) => setError(e instanceof Error ? e.message : String(e)));
+                }
+              : undefined
+          }
+          shared={shared}
           height={height}
           onHeightChange={setHeight}
         />

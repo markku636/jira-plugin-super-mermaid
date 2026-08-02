@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { MermaidViewer, type MermaidViewerHandle } from 'react-super-mermaid';
 import type { MermaidSource, SvgPanZoomSource } from 'react-super-mermaid';
 import { Toolbar } from './Toolbar';
+import { buildMermaidLiveUrl, canShare } from './shareLink';
 import { getIssueKey, isNearLimit, loadDiagrams, saveDiagrams } from './storage';
 import { STARTER_CODE, type Diagram, type DiagramDoc } from './types';
 
@@ -34,6 +35,7 @@ export function App() {
   // 跟 Jira 當下的佈景無關,結果就是淺色頁面裡冒出深色畫布。要暗色請按工具列的鈕。
   const [dark, setDark] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [shared, setShared] = useState(false);
   // 顯示高度。面板在 iframe 裡,lib 的 toggleFullscreen 只會填滿 iframe 而非
   // 瀏覽器視窗,結果是圖縮進原本的小框 —— 所以「放大」在這裡就是設定高度。
   // 'auto' = 依內容撐開。跟著圖一起存進 issue property,每張圖各自記住。
@@ -182,6 +184,20 @@ export function App() {
           });
         }}
         copied={copied}
+        onShare={
+          canShare()
+            ? () => {
+                void buildMermaidLiveUrl(draft, dark)
+                  .then((url) => navigator.clipboard?.writeText(url))
+                  .then(() => {
+                    setShared(true);
+                    window.setTimeout(() => setShared(false), 1800);
+                  })
+                  .catch((e) => setError(e instanceof Error ? e.message : String(e)));
+              }
+            : undefined
+        }
+        shared={shared}
         height={height}
         onHeightChange={setHeight}
       />
