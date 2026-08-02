@@ -41,7 +41,9 @@ resources:
   - key: config
     path: static/ui/build/config
   - key: icons
-    path: ../resources
+    # 必須是 app 目錄【內】的路徑。指向 ../resources 會逃出 app root,
+    # 跟 build/macro/index.html 引用 ../assets/ 是同一類問題(deploy 不會擋,線上才壞)。
+    path: resources
 
 permissions:
   content:
