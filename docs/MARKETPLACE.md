@@ -62,7 +62,23 @@
       ./deploy.ps1 -Environment production
       cd confluence; forge deploy -e production
       ```
-- [x] 在 developer console 啟用 app 分享（sharing），並發布 developer space（`Markku666`）
+- [x] **app sharing 已啟用（2026-08-04 在 console 實際看到）**
+      `My apps` 清單兩個 app 的 `Distribution status` 都是 `Sharing`，
+      `Developer Space` 都是 `Markku666`，`Type` 都是 `Forge`。
+- [ ] **Developer space `Markku666` 還沒發布到 Marketplace —— 這是 listing 建不起來的原因。**
+      08-04 在 `Publish a new app` 選了 `Upload app: Forge app` 之後，
+      `Forge app` 下拉顯示 `No Forge apps available`。
+      逐項排除後只剩這一項：`forge whoami` = `a4756830@gmail.com`（帳號對）、
+      console 顯示 sharing 已開（上一條）、space 存在（`forge developer-spaces list`）——
+      但 **space 存在 ≠ 已發布**，未發布的 space 對 Marketplace 是不可見的。
+      做法（[官方步驟](https://developer.atlassian.com/platform/forge/developer-space/publish-developer-space/)）：
+      console 左側 `DEVELOPER SPACE` 選 `Markku666` → `Settings` →
+      找到 **`Make public on Marketplace`** → `Review & publish` →
+      勾選同意 Marketplace Partner Agreement → `Accept & publish`。
+      發布會讓 space 名稱與聯絡 email 公開，並給你 Marketplace admin 權限。
+      發布後重新載入建立表單，`Forge app` 下拉就會列出兩個 app，
+      `App key` 與 `Compatible Atlassian apps` 隨之自動帶入 ——
+      **絕對不要手打 App key**，那要來自 app 的 ARI。
 
 ## 每次改版的固定流程（兩個 app 各跑一次）
 

@@ -90,7 +90,7 @@ Confluence `fd93a1d5-8b3a-4a6d-8785-61624b4b8fe0`。
 | Hosting | Cloud only |
 | Support contact | `https://github.com/markku636/jira-plugin-super-mermaid/issues` |
 | Privacy policy | `https://github.com/markku636/jira-plugin-super-mermaid/blob/main/docs/PRIVACY.md` |
-| Documentation | `https://github.com/markku636/jira-plugin-super-mermaid/blob/main/docs/GETTING-STARTED.md` |
+| Documentation | `https://github.com/markku636/jira-plugin-super-mermaid/blob/main/docs/GETTING-STARTED.en.md` ⚠️ **用 `.en` 這份** —— 原本那份是繁體中文，而 listing 是英文的，審查者與國際使用者點進去會看到中文頁 |
 | End User Terms | Atlassian 範本 |
 | Logo | `images/logo-144.png` |
 
