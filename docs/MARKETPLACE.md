@@ -2,51 +2,51 @@
 
 目標：**免費上架**（2026-08-02 決定）。
 
-> ## 現況：2026-08-02 兩份 listing 都已送審
+> ## 現況：2026-08-04 listing 還沒建立，送審尚未開始
 >
-> Jira 與 Confluence 兩個 app 都已 `forge deploy -e production`，
-> 兩份 Marketplace listing 都已送出審核，**現在是等待審核結果**（約 10–15 個工作天）。
+> Jira 與 Confluence 兩個 app 都已 `forge deploy -e production` 並在
+> `markku666.atlassian.net` 驗證過 —— **技術面備妥，但 Marketplace 上一份 listing 都沒有。**
 >
-> 送審前的三個阻斷項全部解除，包含當初標成 go/no-go 的 M3 視覺編輯器 ——
-> 這條原本寫著「M3 完成前不要送審，否則會被以缺乏差異化打回」，已經先做完才送。
+> 08-02 這份文件曾寫著「兩份 listing 都已送審」。那是**沒有憑證的斷言**：
+> 08-04 登入合作夥伴後台（vendor `Mark ku` / id `256255156`）看到的是 `No apps`，
+> repo 裡也找不到任何 listing id 或後台截圖。10–15 個工作天的鐘從未開始走。
 >
-> 但「送出去了」不等於「只能等」：下面〈審核期間就該修的〉那幾項是審查者
-> 現在點下去就會看到的不一致，跟審核結果無關，現在就能修完。
+> **紀錄規則（別再犯）：拿到 listing id（`marketplace.atlassian.com/manage/apps/<id>`）
+> 之前，狀態一律寫「未送審」。** 建立 listing 與送審只能由人在網頁後台完成，
+> Forge CLI 沒有這個指令，自動化也碰不到 —— 所以這一步的狀態永遠只能靠人回填。
+>
+> 送審材料已打包在 [../submission/](../submission/)：逐欄文案 + logo + 截圖 + 檢查清單。
 
 要準備的東西：Marketplace 合作夥伴帳號、隱私權政策、End User Terms、支援管道、送審。
 個人信箱即可，不必弄公司網域 email。
 
 ---
 
-## 阻斷項（送審前，全部已解除）
+## 阻斷項（技術面已全部解除）
 
 | # | 項目 | 現況 | 說明 |
 |---|---|---|---|
-| B1 | Marketplace 合作夥伴帳號 | ✅ 已完成 | 送審的前置，沒有它連 listing 都建不了 |
+| B1 | Marketplace 合作夥伴帳號 | ✅ 已完成 | vendor `Mark ku`（id `256255156`）。⚠️ 後台必須用 **`a4756830@gmail.com`** 登入 —— 用公司帳號登入會看到另一個空的 vendor profile，`Create app` 的清單裡也找不到這兩個 Forge app |
 | B2 | app 在真實站台跑過 | ✅ 已完成 | `markku666.atlassian.net`，Jira 與 Confluence 兩個 app 的 development / production 都已部署並安裝驗證 |
 | B3 | M3 視覺編輯器 | ✅ 2026-08-02 完成 | **唯一的差異化。** `DrawEditor.tsx`，兩個 app 共用，拖拉結果無損序列化回 mermaid 原始碼 |
 
-## 審核期間就該修的（不等結果，現在做）
+## 送審前要修的
 
-- [ ] **B4　Confluence 的權限說法跟 manifest 對不起來 —— 最可能被退件的一項**
-      `confluence/manifest.yml` 實際宣告了 `read:page:confluence` 與
-      `write:page:confluence`（內文直接編輯要用，走 REST 讀回 ADF 再寫回去），但
-      [PRIVACY.md](PRIVACY.md) 的 Permissions 段寫著
-      「requests **no API scopes at all**. It never calls a Confluence API」，
-      [LISTING-COPY.md](LISTING-COPY.md) 的 Confluence 描述也寫
-      「It requests no Confluence API permissions at all」。
-      使用者安裝時的同意畫面會把這兩個 scope 明白列出來，跟隱私權政策正面打架 ——
-      這正是審查會抓、也應該被抓的類型。
-      三處一起改：manifest 註解、PRIVACY 的 Permissions 段、listing 描述。
-      下面〈送審要填的資料〉那張表反而是對的，照它的說法寫。
-- [ ] **B5　改好的隱私權政策還沒 commit，審查者現在看到的是舊版**
-      listing 的 Privacy policy 與 Documentation 兩個欄位都指向 GitHub `main` 的 blob，
-      但「分享按鈕會產生站外連結」那段說明目前只在本機工作目錄（未 commit、未 push）。
-      線上那份還寫著 `No data leaves your Atlassian site` 這種絕對句，
-      而 app 確實有一顆會產生 `blog.markkulab.net` 連結的按鈕 ——
-      **說法與行為不一致就是退件理由**，而這件事 commit + push 就解決。
-- [ ] 確認 GitHub repo 是 **public**。隱私權政策、文件、支援三個欄位全指向它，
-      repo 只要是 private，審查者三個連結一次全開不了。
+- [x] **B4　Confluence 的權限說法跟 manifest 對不起來 —— 2026-08-04 已修**
+      `confluence/manifest.yml` 實際宣告 `read:page:confluence` 與
+      `write:page:confluence`（內文直接編輯要用，`savePageMacro.ts` 走 `requestConfluence`
+      讀回 ADF 再寫回去，以登入使用者身分、只碰當前那一頁），但當時
+      [PRIVACY.md](PRIVACY.md) 寫著「requests **no API scopes at all**」、
+      [LISTING-COPY.md](LISTING-COPY.md) 寫著「It requests no Confluence API permissions
+      at all」，連 manifest 自己的註解都還寫「刻意沒有 permissions.scopes」。
+      安裝同意畫面會把兩個 scope 列給使用者看，跟隱私權政策正面打架 ——
+      典型退件理由。已四處一起改：manifest 註解、PRIVACY 的 Permissions 段、
+      listing 描述、本檔。**未來改 scope 一律同步這四處。**
+- [x] **B5　隱私權政策的站外連結揭露已 push**
+      「分享按鈕會產生 `blog.markkulab.net` 連結」那段已在 `95e43c7` 進 `main`，
+      GitHub 上那份是新版（08-04 核對過 `main` 與 `origin/main` 齊平）。
+- [x] GitHub repo 是 **public**（08-04 以 API 核對 `private: false`）。
+      隱私權政策、文件、支援三個欄位全指向它，private 會讓審查者三個連結一次全開不了。
 - [ ] （核准後再做）把隱私權政策與文件搬到 blog 的固定網址。
       GitHub blob URL 會隨 repo 改名、搬家、預設分支更名而死，
       而 listing 上的死連結是要走更新流程才能修的東西。
@@ -94,15 +94,20 @@
 
 ## 授權與第三方素材（沒人催，但被抓到很麻煩）
 
-- [ ] repo 根目錄**沒有 LICENSE 檔**。public repo 沒有授權檔等於保留所有權利，別人不能合法 fork，
-      跟「開源讓你自己查證我沒偷傳資料」的立場自相矛盾。挑一個補上
-- [ ] `THIRD-PARTY-NOTICES`：這個 app 是把 mermaid、d3、svg-pan-zoom、字型
-      **整包打進 bundle 出貨**的，逐一確認授權允許再散布，並列出來
-- [ ] **`static/panel/public/Virgil.woff2` 的授權要單獨確認。**
-      字型「自己用」跟「隨產品散布給別人」是兩件事，
-      而它正是為了不連 jsDelivr 才被收進 bundle 的
-- [ ] app 名稱裡的 "Mermaid" 是第三方 OSS 專案名 ——
-      listing 描述與 README 各放一行「非 mermaid-js 官方作品」，成本一行，省掉爭議
+- [x] repo 根目錄的 LICENSE **已補（MIT，2026-08-04）**。挑 MIT 是為了跟
+      `react-super-mermaid`（MIT）一致；要換別的授權現在換成本最低。
+      public repo 沒有授權檔等於保留所有權利，別人不能合法 fork，
+      跟「開源讓你自己查證我沒偷傳資料」的立場自相矛盾
+- [x] `THIRD-PARTY-NOTICES.md` **已寫（2026-08-04）**：mermaid 11.16.0 MIT、
+      react-super-mermaid 0.6.87 MIT、svg-pan-zoom 3.6.2 BSD-2、react/react-dom 18.3.1 MIT、
+      d3 7.9.0 ISC、cytoscape 3.34.0 MIT、DOMPurify 3.4.12 MPL-2.0/Apache-2.0、
+      KaTeX 0.16.47 MIT —— 版本是對 `static/panel/node_modules` 實查的，全部允許再散布
+- [x] **`Virgil.woff2` 的授權已查清：SIL Open Font License 1.1，允許隨軟體 bundle 與散布。**
+      來源 [excalidraw/virgil](https://github.com/excalidraw/virgil)。Excalidraw 後來換成
+      Excalifont 是為了可讀性、不是授權問題（兩者都是 OFL-1.1）。
+      字型「自己用」跟「隨產品散布」本來是兩件事，這條確認過就不再是風險
+- [x] app 名稱裡的 "Mermaid" 是第三方 OSS 專案名 —— `THIRD-PARTY-NOTICES.md` 的
+      Trademarks 段已寫明「非 mermaid-js 官方作品」。listing 描述要不要也放一行由你決定
 
 ## 常見退件原因自我檢查（審查者會做的事，先自己做一遍）
 
@@ -143,17 +148,22 @@
 - [x] Logo（`resources/logo.svg` + `logo-144.png` + `logo-512.png`，兩個 app 共用）
 - [x] 螢幕截圖（`screenshot/processed/jira-panel.webp`、`confluence-inline.webp`）
 - [x] 標題與簡述、功能亮點、分類 —— 文案見 [LISTING-COPY.md](LISTING-COPY.md)
-- [ ] **主視覺換成「拖拉編輯圖表」的動態畫面** —— 送審用的是靜態截圖。
-      M3 已經做完，這是核准後可以立刻補強的第一件事：拖拉的畫面才是唯一能一眼
-      區隔另外 8 個競品的東西，靜態渲染截圖跟它們長得一模一樣。
-      同理 [LISTING-COPY.md](LISTING-COPY.md) 的描述文案目前主打
-      「Runs on Atlassian + 免費」，還沒把視覺編輯器寫進去（送審版即是如此，
-      要改請走 listing 更新流程，別直接覆蓋掉已送審的內容而不自知）。
+- [x] **主視覺放「拖拉編輯圖表」的畫面 —— 2026-08-04 已產出**
+      `hl-jira-2-draw` / `hl-conf-2-draw`（1840×900 ＋ 580×330），拍的是當前程式碼
+      跑出來的真實編輯器。拖拉畫面是市集上另外 8 個 app 都沒有的東西，第一版就放。
+      因為 listing 還沒建立，這件事不必等核准、也不必走更新流程 —— 08-02 那條
+      「送審版文案沒寫視覺編輯器，要改得走更新流程」的限制隨著「其實沒送審」一起消失。
+      六張必填 highlight 加四張圖庫補充都在 `submission/images/`，
+      產生腳本 [../submission/scripts/make-listing-images.mjs](../submission/scripts/make-listing-images.mjs)。
+      **改過面板 UI 就重跑那支**，否則截圖會再次與實際 UI 不符。
+- [ ] 描述文案要不要補上視覺編輯器 —— 段落已備在
+      [../submission/SUBMIT-SHEET.md](../submission/SUBMIT-SHEET.md) 的〈選配〉區塊，由你決定。
 
 ## 時程
 
-- 審核約 **10–15 個工作天**（依當時案量浮動），2026-08-02 送出
-- production 部署後，在 listing 核准前無法安裝
+- 審核約 **10–15 個工作天**（依當時案量浮動），**從送出那天起算 —— 目前尚未送出**
+- production 部署後，在 listing 核准前無法從 Marketplace 安裝
+  （`forge install` 走的是另一條路，不受影響）
 - **被退件不是意外。** 依審查意見修完重送即可，代價是再等一輪 10–15 天
 
 ## 核准之後

@@ -17,7 +17,12 @@ Marketplace 上已有 8 個以上的 Mermaid for Jira，**全部都是「貼語�
 
 ## 現況
 
-**2026-08-02：兩份 Marketplace listing 都已送審，等待 Atlassian 審核（約 10–15 個工作天）。**
+**2026-08-04：兩個 app 都已部署到 production，但 Marketplace listing 還沒建立 —— 送審尚未開始。**
+
+> 08-02 這裡曾寫著「兩份 listing 已送審」，那是沒有憑證的斷言。08-04 登入 Marketplace
+> 合作夥伴後台確認 `Apps` 是空的（`No apps`）。
+> **紀錄規則：拿到 listing id（`marketplace.atlassian.com/manage/apps/<id>`）之前，
+> 狀態一律寫「未送審」。** 建立 listing 只能在網頁後台做，CLI 與自動化都碰不到。
 
 | 里程碑 | 狀態 |
 |---|---|
@@ -25,7 +30,7 @@ Marketplace 上已有 8 個以上的 Mermaid for Jira，**全部都是「貼語�
 | M1 Viewer | ✅ 完成（已在 `markku666.atlassian.net` 實際驗證） |
 | M2 編輯與儲存 | ✅ 完成（Jira 存 issue property、Confluence 存 macro 參數） |
 | M3 視覺編輯器 | ✅ 完成（拖拉繪圖 + 無損 round-trip，兩個 app 共用同一條儲存路徑） |
-| M4 上架 | 🟡 兩份 listing 已送審，等待審核結果 |
+| M4 上架 | ⬜ 未開始 —— listing 尚未建立，素材與逐欄文案已備好在 [submission/](submission/) |
 
 這個 repo 現在裝了**兩個獨立的 Forge app** —— 跨產品 app（`app.compatibility` 同時宣告
 jira + confluence）不接受免費 listing，所以拆成兩個單產品 app，代價是兩份 listing
@@ -89,7 +94,27 @@ confluence/             Confluence app(獨立 Forge app,自己的 manifest 與 a
   static/ui/src/macro.tsx        內文顯示與內嵌編輯
   static/ui/src/config.tsx       macro 設定面板
   static/ui/src/savePageMacro.ts 寫回頁面 macro 參數
+demo/                   只給「拍 listing 素材」用的替身,不進 Forge bundle
+  storage-mock.ts       Jira 面板的 issue property 替身(改記憶體)
+  forge-bridge-mock.ts  Confluence macro 的 @forge/bridge 替身
+submission/             Marketplace 送審材料
+  SUBMIT-SHEET.md       逐欄填什麼、路徑、必填素材清單
+  images/               logo / banner / highlight(規格尺寸,進版控)
+  scripts/make-listing-images.mjs  拍當前 UI 並合成上面那些圖
 ```
+
+> **listing 的圖一律用腳本從當前 UI 重生,不要手拍。** 手拍的截圖會隨 UI 改動悄悄過期,
+> 而「截圖與實際 UI 不符」是 Marketplace 審查會逐張比對的項目 ——
+> 08-02 那兩張就是這樣壞掉的(拍完之後還有 5 個改 UI 的 commit)。做法:
+>
+> ```powershell
+> cd static/panel;         npx vite --config vite.demo.config.ts   # :5199
+> cd confluence/static/ui; npx vite --config vite.demo.config.ts   # :5299
+> node submission/scripts/make-listing-images.mjs
+> ```
+>
+> 兩個 `vite.demo.config.ts` 只把 `@forge/bridge` 換成 `demo/` 的替身,
+> 元件、CSS、mermaid 注入全部走真的那份 —— 拍到的是真 UI,不是示意圖。
 
 > **Confluence 的 Custom UI 不能用「單次多 entry」建置。** `resource.path` 就是那個 iframe 的
 > 服務根目錄，多 entry 會產生共用的 `build/assets/`，而 `build/macro/index.html` 引用

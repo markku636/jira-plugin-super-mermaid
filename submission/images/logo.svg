@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!--
+    Marketplace app logo。沿用 VS Code 擴充 media/logo.svg 的視覺語言:
+    四個圓角節點 + slate 連接線,配色取自 Colorful 主題的 Tailwind 色票。
+
+    與 VS Code 版的差異:留白收緊(節點 96x66、外距 20)。
+    Marketplace 在搜尋結果裡的 logo 只有 ~48px,原本的大留白會讓圖形糊成一團。
+
+    背景刻意留透明 —— 飽和的節點色與中階的 slate 連接線在淺色卡片與深色
+    介面上都站得住,加底色反而會在某一邊變成突兀的方塊。
+  -->
+  <g stroke="#64748B" stroke-width="14" fill="none" stroke-linecap="round">
+    <line x1="116" y1="73" x2="140" y2="73"/>
+    <line x1="68" y1="106" x2="68" y2="150"/>
+    <line x1="188" y1="106" x2="188" y2="150"/>
+    <line x1="116" y1="183" x2="140" y2="183"/>
+  </g>
+  <rect x="20" y="40" width="96" height="66" rx="18" fill="#60A5FA"/>
+  <rect x="140" y="40" width="96" height="66" rx="18" fill="#4ADE80"/>
+  <rect x="20" y="150" width="96" height="66" rx="18" fill="#FB923C"/>
+  <rect x="140" y="150" width="96" height="66" rx="18" fill="#C084FC"/>
+</svg>

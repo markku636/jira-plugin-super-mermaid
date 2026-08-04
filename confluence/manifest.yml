@@ -64,7 +64,10 @@ permissions:
       - 'unsafe-inline'
 
 # ⚠️ 同樣刻意沒有 permissions.external —— 那是 Runs on Atlassian 的命脈。
-# 也刻意沒有 permissions.scopes:圖表存在 macro 參數裡,不需要讀寫 Confluence API。
+# scopes 只有上面那兩個(read/write:page:confluence),而且只為了「在檢視頁面直接編輯」
+# 而存在(見 savePageMacro.ts)。改動這裡務必同步 docs/PRIVACY.md 的 Permissions 段
+# 與 docs/LISTING-COPY.md 的描述 —— 安裝同意畫面會把 scope 列給使用者看,
+# 說法對不上 manifest 是 Marketplace 退件的典型理由。
 
 app:
   runtime:

@@ -19,8 +19,14 @@ not a nice-to-have — completed 2026-08-02 (`DrawEditor.tsx`, shared by both ap
 
 ## Status
 
-**2026-08-02: both Marketplace listings have been submitted and are awaiting Atlassian
-review (roughly 10–15 business days).**
+**2026-08-04: both apps are deployed to production, but no Marketplace listing exists yet —
+review has not started.**
+
+> This section claimed on 08-02 that both listings had been submitted. That was an
+> unverified assertion: on 08-04 the Marketplace partner portal showed `No apps`.
+> **Rule of record: until there is a listing id
+> (`marketplace.atlassian.com/manage/apps/<id>`), the status reads "not submitted."**
+> Creating a listing is a web-portal-only action — no CLI or automation can do it.
 
 | Milestone | Status |
 |---|---|
@@ -28,7 +34,7 @@ review (roughly 10–15 business days).**
 | M1 Viewer | ✅ Done (verified live on `markku666.atlassian.net`) |
 | M2 Edit & save | ✅ Done (Jira stores an issue property, Confluence stores a macro parameter) |
 | M3 Visual editor | ✅ Done (drag-and-drop editing with lossless round-trip; both apps share the same save path) |
-| M4 Listing | 🟡 Both listings submitted, awaiting review |
+| M4 Listing | ⬜ Not started — no listing created yet; assets and per-field copy are staged in [submission/](submission/) |
 
 This repo now houses **two independent Forge apps** — a cross-product app
 (`app.compatibility` declaring both jira and confluence) is not eligible for a free

@@ -44,7 +44,13 @@ designation: the rendering engine, fonts, and every dependency are bundled insid
 The app itself makes no network request to any external domain — you can verify that
 yourself in your browser's Network tab. The one exception is the toolbar's share button:
 it copies a link to your clipboard, and that link opens the diagram on a preview page
-outside Atlassian, so it only travels if you choose to share it. It requests no Confluence API permissions at all.
+outside Atlassian, so it only travels if you choose to share it.
+
+The only permissions it requests are read and write on Confluence pages, used solely to
+save a diagram you edited straight from the page body — the app reads that one page,
+updates the diagram stored in its own macro parameter, and writes it back. Every request
+is made as the signed-in user, so Confluence's own permission model applies: if you cannot
+edit a page, neither can the app.
 
 For teams with data-residency or vendor-review requirements, that is usually the deciding
 factor.
@@ -167,14 +173,18 @@ Free, with no usage limits.
 
 ## 素材現況
 
-> 上面這兩份文案就是 **2026-08-02 送審時實際送出的版本**。要改請走 listing 更新流程，
-> 不要以為改了這個檔案線上就會跟著變。
+> **2026-08-04 更正**：這裡原本寫著「上面兩份文案就是 08-02 送審時實際送出的版本」——
+> 那是錯的，listing 從來沒建立過（見 [MARKETPLACE.md](MARKETPLACE.md) 頂部）。
+> 也就是說**這個檔案現在還是可以自由改，改完直接貼進第一版 listing，
+> 不需要走任何更新流程**。可貼版本已整理在 [../submission/SUBMIT-SHEET.md](../submission/SUBMIT-SHEET.md)。
 
 - [x] App logo（`resources/logo.svg` + `logo-144.png` + `logo-512.png`，兩個 app 共用）
-- [x] 螢幕截圖（`screenshot/processed/jira-panel.webp`、`confluence-inline.webp`）
+- [x] 螢幕截圖（`screenshot/processed/jira-panel.webp`、`confluence-inline.webp`
+      → 已轉成後台吃得下的 PNG，放在 `submission/images/`）
 - [x] End User Terms（用 Atlassian 範本）
-- [ ] **拖拉編輯的動態主視覺** —— 送審用的是靜態截圖，這是核准後要補的第一件事
-- [ ] 描述文案補上視覺編輯器 —— M3 完成於送審同日，現行文案還沒把它寫進去
+- [ ] **拖拉編輯的主視覺** —— 現有素材只有靜態渲染截圖，跟競品長得一樣；
+      拖拉畫面是唯一的差異化，第一版就該放
+- [ ] 描述文案要不要補上視覺編輯器 —— 段落已備在 SUBMIT-SHEET 的〈選配〉區塊
 
 **截圖要注意的事**：靜態的渲染結果跟市集上另外 8 個 app 長得一模一樣。
 真正能區隔的畫面是「拖拉編輯圖表」、「圖表嵌在 Confluence 內文中與文字混排」，以及

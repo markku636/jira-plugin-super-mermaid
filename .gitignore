@@ -22,3 +22,7 @@ outputs/
 
 # 含 npm/Atlassian token
 .npmrc
+
+# listing 素材的原始擷取。成品 submission/images/ 要進版控,中間產物不要 ——
+# 隨時可用 submission/scripts/make-listing-images.mjs 重生。
+submission/.shots/

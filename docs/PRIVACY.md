@@ -54,8 +54,12 @@ including when you press Share, because that button only writes to your clipboar
 
 ## Permissions
 
-**Super Mermaid for Confluence** requests **no API scopes at all**. It never calls a
-Confluence API.
+**Super Mermaid for Confluence** requests `read:page:confluence` and
+`write:page:confluence`. These are used solely to save a diagram you edited from the page
+body: the app reads that one page back, replaces the diagram source held in its own macro
+parameter, and writes the page again. It touches no other page and reads nothing else.
+All requests are made **as the signed-in user**, so Confluence's own permission model
+applies: if you cannot edit a page, the app cannot write to it either.
 
 **Super Mermaid for Jira** requests `read:jira-work` and `write:jira-work`. These are used
 solely to read and write the app's own issue property (`com.markku.super-mermaid.diagrams`)
