@@ -15,6 +15,26 @@ Marketplace 上已有 8 個以上的 Mermaid for Jira，**全部都是「貼語�
 因此里程碑 M3（視覺編輯器接上）是整個專案的 go/no-go，不是加分項 ——
 已於 2026-08-02 完成（`DrawEditor.tsx`，兩個 app 共用）。
 
+第二個別人沒有的東西是 **ORID 圖種**（lib 0.28.0 起）：mermaid 原生沒有這個圖，
+其他 Mermaid for Jira 一律畫不出來。在 issue 面板或 Confluence 頁面直接寫
+
+```
+orid
+    title 上線後回顧
+    objective
+        錯誤率 3.2%
+    reflective
+        團隊感到焦慮
+    interpretive
+        監控缺口是根因
+    decisional
+        補上告警 @owner 8/25
+```
+
+就會渲染成四段語意配色的縱向漏斗；`DrawEditor` 開它會切成四段結構化表單而非畫布
+（ORID 沒有座標可拖）。retro / 事故檢討的 Jira 單直接長出一張圖，這正是 Jira 使用者
+每個 sprint 都在做的事。
+
 ## 現況
 
 **2026-08-04：兩個 app 都已部署到 production，但 Marketplace listing 還沒建立 —— 送審尚未開始。**
