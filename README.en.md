@@ -17,6 +17,17 @@ thing: **they can only type, this one lets you drag**.
 That's why milestone M3 (wiring up the visual editor) was the project's go/no-go,
 not a nice-to-have — completed 2026-08-02 (`DrawEditor.tsx`, shared by both apps).
 
+## Support open source
+
+This tool is free and open source. If it saved you time, buy me a coffee so the updates keep coming.
+
+[![PayPal $5](https://img.shields.io/badge/PayPal-%245-0070ba?logo=paypal&logoColor=white)](https://www.paypal.com/ncp/payment/8B7GRXA6UJH36)
+[![PayPal $10](https://img.shields.io/badge/PayPal-%2410-0070ba?logo=paypal&logoColor=white)](https://www.paypal.com/ncp/payment/8LBTFUBBF2CHS)
+[![PayPal $15](https://img.shields.io/badge/PayPal-%2415-0070ba?logo=paypal&logoColor=white)](https://www.paypal.com/ncp/payment/A653DD46GEU4W)
+[![PayPal $25](https://img.shields.io/badge/PayPal-%2425-0070ba?logo=paypal&logoColor=white)](https://www.paypal.com/ncp/payment/Y5WPSXVGH3YS4)
+
+For any other amount, use [PayPal.Me](https://paypal.me/226network).
+
 ## Status
 
 **2026-08-04: both apps are deployed to production, but no Marketplace listing exists yet —
@@ -199,14 +210,3 @@ submission itself — details in [docs/MARKETPLACE.md](docs/MARKETPLACE.md).
 
 The repo's own license is still undecided (the sibling lib is MIT, and the two
 aren't in conflict, but a license still needs to be picked explicitly).
-
-## ☕ Support open source
-
-This tool is free and open source. If it saved you time, buy me a coffee so the updates keep coming.
-
-[![PayPal $5](https://img.shields.io/badge/PayPal-%245-0070ba?logo=paypal&logoColor=white)](https://www.paypal.com/ncp/payment/8B7GRXA6UJH36)
-[![PayPal $10](https://img.shields.io/badge/PayPal-%2410-0070ba?logo=paypal&logoColor=white)](https://www.paypal.com/ncp/payment/8LBTFUBBF2CHS)
-[![PayPal $15](https://img.shields.io/badge/PayPal-%2415-0070ba?logo=paypal&logoColor=white)](https://www.paypal.com/ncp/payment/A653DD46GEU4W)
-[![PayPal $25](https://img.shields.io/badge/PayPal-%2425-0070ba?logo=paypal&logoColor=white)](https://www.paypal.com/ncp/payment/Y5WPSXVGH3YS4)
-
-For any other amount, use [PayPal.Me](https://paypal.me/226network).

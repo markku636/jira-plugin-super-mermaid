@@ -2,6 +2,8 @@
 
 **繁體中文** ｜ [English](./README.en.md)
 
+> ☕ 這個工具免費且開源。如果幫上忙，可以 [請我喝杯咖啡](#贊助開源)。
+
 Atlassian Forge app：在 Jira issue 裡檢視與**視覺化編輯** Mermaid 圖表。
 
 `react-super-mermaid` 的第三個宿主（前兩個是 blog 與 VS Code 擴充）。
@@ -34,6 +36,17 @@ orid
 就會渲染成四段語意配色的縱向漏斗；`DrawEditor` 開它會切成四段結構化表單而非畫布
 （ORID 沒有座標可拖）。retro / 事故檢討的 Jira 單直接長出一張圖，這正是 Jira 使用者
 每個 sprint 都在做的事。
+
+## 贊助開源
+
+這個工具免費且開源。如果它幫你省下了時間，可以請我喝杯咖啡，讓後續的更新繼續做下去。
+
+[![PayPal $5](https://img.shields.io/badge/PayPal-%245-0070ba?logo=paypal&logoColor=white)](https://www.paypal.com/ncp/payment/8B7GRXA6UJH36)
+[![PayPal $10](https://img.shields.io/badge/PayPal-%2410-0070ba?logo=paypal&logoColor=white)](https://www.paypal.com/ncp/payment/8LBTFUBBF2CHS)
+[![PayPal $15](https://img.shields.io/badge/PayPal-%2415-0070ba?logo=paypal&logoColor=white)](https://www.paypal.com/ncp/payment/A653DD46GEU4W)
+[![PayPal $25](https://img.shields.io/badge/PayPal-%2425-0070ba?logo=paypal&logoColor=white)](https://www.paypal.com/ncp/payment/Y5WPSXVGH3YS4)
+
+其他金額請走 [PayPal.Me](https://paypal.me/226network)。
 
 ## 現況
 
@@ -208,14 +221,3 @@ End User Terms、支援管道與送審，細節見 [docs/MARKETPLACE.md](docs/MA
 > 對企業客戶是信任訊號，而維持它的成本就只是**永遠不要加 `permissions.external`**。
 
 repo 本身的授權條款仍未決定（sibling lib 是 MIT，兩者不衝突，但仍需明確選定）。
-
-## ☕ 贊助開源
-
-這個工具免費且開源。如果它幫你省下了時間，可以請我喝杯咖啡，讓後續的更新繼續做下去。
-
-[![PayPal $5](https://img.shields.io/badge/PayPal-%245-0070ba?logo=paypal&logoColor=white)](https://www.paypal.com/ncp/payment/8B7GRXA6UJH36)
-[![PayPal $10](https://img.shields.io/badge/PayPal-%2410-0070ba?logo=paypal&logoColor=white)](https://www.paypal.com/ncp/payment/8LBTFUBBF2CHS)
-[![PayPal $15](https://img.shields.io/badge/PayPal-%2415-0070ba?logo=paypal&logoColor=white)](https://www.paypal.com/ncp/payment/A653DD46GEU4W)
-[![PayPal $25](https://img.shields.io/badge/PayPal-%2425-0070ba?logo=paypal&logoColor=white)](https://www.paypal.com/ncp/payment/Y5WPSXVGH3YS4)
-
-其他金額請走 [PayPal.Me](https://paypal.me/226network)。
