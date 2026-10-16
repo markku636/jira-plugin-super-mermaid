@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!--
+    Confluence 版 Marketplace app logo。
+
+    與 Jira 版(logo.svg)的關係:節點語言、圓角、配色、slate 連接線全部沿用 ——
+    兩份 listing 要看起來是同一個產品的兩個宿主,不是兩家廠商。
+
+    唯一的差異是頂端兩條 slate 文字條:那就是 Confluence 版的賣點
+    「圖長在頁面內文裡」(Jira 版只能待在側邊面板)。挑「文字行」而不是
+    Confluence logo 的形狀,是因為 Marketplace 禁止在 app logo 裡用 Atlassian 商標。
+
+    文字條用 slate-400(#94A3B8)而不是更淺的 slate-300 —— 搜尋結果的白色卡片上
+    slate-300 幾乎消失,slate-400 在淺色與深色兩邊都看得見,又比 slate-500 的
+    連接線淺一階,維持「文字是背景、圖是主體」的層次。
+
+    背景同樣留透明,理由見 logo.svg。
+  -->
+  <g fill="#94A3B8">
+    <rect x="22" y="24" width="212" height="16" rx="8"/>
+    <rect x="22" y="50" width="142" height="16" rx="8"/>
+  </g>
+  <g stroke="#64748B" stroke-width="13" fill="none" stroke-linecap="round">
+    <line x1="114" y1="117" x2="142" y2="117"/>
+    <line x1="68" y1="146" x2="68" y2="178"/>
+    <line x1="188" y1="146" x2="188" y2="178"/>
+    <line x1="114" y1="207" x2="142" y2="207"/>
+  </g>
+  <rect x="22" y="88" width="92" height="58" rx="16" fill="#60A5FA"/>
+  <rect x="142" y="88" width="92" height="58" rx="16" fill="#4ADE80"/>
+  <rect x="22" y="178" width="92" height="58" rx="16" fill="#FB923C"/>
+  <rect x="142" y="178" width="92" height="58" rx="16" fill="#C084FC"/>
+</svg>

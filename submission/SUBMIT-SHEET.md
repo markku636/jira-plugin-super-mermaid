@@ -160,8 +160,12 @@ Draw it, don't type it
 
 ## 5. 送出之後，回填這裡
 
-- [ ] 兩個 listing id（`marketplace.atlassian.com/manage/apps/<id>`）
-- [ ] 送出日期 →（審核 10–15 個工作天從這天起算）
+- [x] 兩個 listing id（2026-08-05 建立）
+      - Jira：`463339441`（version `2007000`）→ <https://marketplace.atlassian.com/manage/apps/463339441>
+      - Confluence：`1739220856`（version `3003000`）→ <https://marketplace.atlassian.com/manage/apps/1739220856>
+- [ ] 送出日期 → **＿＿＿＿**（按下 `Submit` 那天填，審核從這天起算）
+      ⚠️ 有 listing id 只代表 listing **建立**了，不等於**送審**了。這一欄要等你確認
+      後台兩份的狀態都變成 `In review`（或收到 Atlassian 的確認信）才填。
 - [ ] 回填 [../README.md](../README.md)、[../README.en.md](../README.en.md)、
       [../docs/MARKETPLACE.md](../docs/MARKETPLACE.md) 的狀態欄
 
